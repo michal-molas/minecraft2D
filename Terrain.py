@@ -21,10 +21,7 @@ class Terrain:
                     else:
                         terrainLayer.append("stone")
                 else:
-                    if i % 2 == 0:
-                        terrainLayer.append("sky")
-                    else:
-                        terrainLayer.append("water")
+                    terrainLayer.append("sky")
             self.terrain.append(terrainLayer)
 
     def draw(self, window, player):

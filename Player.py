@@ -15,6 +15,12 @@ class Player:
     jumpHeight = 44
     jumpCount = jumpHeight
 
+    canDig = True
+    alreadyDigged = False
+
+    isFalling = False
+    fallCount = 0
+
     def jump(self):
         if self.jumpCount > 0:
             if self.jumpCount > 3 * (self.jumpHeight//4):
@@ -30,23 +36,31 @@ class Player:
             self.canJump = True
             self.jumpCount = self.jumpHeight
 
-    def dig(self, terrain):
-        indexY = 64 - self.position[1] // 32 + 1
-        if self.position[0] < 0:
-            if self.position[0] % 32 < 16:
-                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64
-            else:
-                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
-        else:
-            if self.position[0] % 32 < 16:
-                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64
-            else:
-                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
-        terrain.terrain[indexY][indexX] = "water"
+    def dig(self, terrain, x, y):
+        terrain.terrain[y + 1][x] = "sky"
+
+    def fall(self, terrain, x, y):
+        if terrain.terrain[y + 1][x] == "sky" and self.position[1] % 32 == 0:
+            self.isFalling = True
 
     def move(self, terrain):
         print(self.position)
+
         keys = pygame.key.get_pressed()
+
+        playerIndexY = 64 - self.position[1] // 32
+        if self.position[0] < 0:
+            if self.position[0] % 32 < 16:
+                playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64
+            else:
+                playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
+        else:
+            if self.position[0] % 32 < 16:
+                playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64
+            else:
+                playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
+
+        # terrain.terrain[playerIndexY][playerIndexX] = "water"
 
         if keys[pygame.K_a]:
             self.position[0] -= 1
@@ -54,12 +68,27 @@ class Player:
             self.position[0] += 1
 
         if self.canJump:
-            if keys[pygame.K_w]:
+            self.fall(terrain, playerIndexX, playerIndexY)
+            if keys[pygame.K_w] and not self.isFalling:
                 self.canJump = False
-            if keys[pygame.K_s]:
-                self.dig(terrain)
+            if keys[pygame.K_s] and not self.alreadyDigged and not self.isFalling:
+                self.dig(terrain, playerIndexX, playerIndexY)
+                self.alreadyDigged = True
         else:
             self.jump()
+
+        if not keys[pygame.K_s]:
+            self.alreadyDigged = False
+
+        # falling
+        if self.isFalling:
+            self.position[1] -= 2
+            self.fallCount += 2
+
+        if self.fallCount == 32:
+            self.fallCount = 0
+            self.isFalling = False
+        # falling end
 
     def draw(self, window):
         window.blit(self.playerPng, (32*20, 32*10))
