@@ -12,7 +12,7 @@ terrain = Terrain.Terrain()
 
 
 def update():
-    player.move()
+    player.move(terrain)
 
 
 def draw():

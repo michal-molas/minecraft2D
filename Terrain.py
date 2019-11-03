@@ -28,10 +28,11 @@ class Terrain:
             self.terrain.append(terrainLayer)
 
     def draw(self, window, player):
+        print(self.terrain[63][500])
         for i in range(config.screenHeight // 32 + 2):
             for j in range(config.screenWidth // 32 + 2):
                 indexY = i + 64 - (config.screenHeight//32) // 2 - player.position[1]//32 - 1
-                indexX = j + 500 - player.position[0] // 32
+                indexX = j + 500 + player.position[0] // 32
                 if player.position[0] >= 0:
                     posX = j * 32 - player.position[0] % 32
                 else:
