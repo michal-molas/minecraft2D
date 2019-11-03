@@ -23,11 +23,11 @@ class Player:
 
     def jump(self):
         if self.jumpCount > 0:
-            if self.jumpCount > 3 * (self.jumpHeight//4):
+            if self.jumpCount > 3 * self.jumpHeight // 4:
                 self.position[1] += 3
-            elif self.jumpCount > 2 * (self.jumpHeight//4):
+            elif self.jumpCount > 2 * self.jumpHeight // 4:
                 self.position[1] += 1
-            elif self.jumpCount > self.jumpHeight//4:
+            elif self.jumpCount > self.jumpHeight // 4:
                 self.position[1] -= 1
             else:
                 self.position[1] -= 3
@@ -62,9 +62,15 @@ class Player:
 
         # terrain.terrain[playerIndexY][playerIndexX] = "water"
 
-        if keys[pygame.K_a]:
+        print(self.position[0] % 32)
+        if keys[pygame.K_a] and (terrain.terrain[playerIndexY][playerIndexX - 1] == "sky"
+                                 or self.position[0] % 32 > 16
+                                 or playerIndexX != 500 + self.position[0] // 32 + config.screenWidth // 64 + 1):
             self.position[0] -= 1
-        elif keys[pygame.K_d]:
+        elif keys[pygame.K_d] and (terrain.terrain[playerIndexY][playerIndexX + 1] == "sky"
+                                   or (self.position[0] % 32 < 16)
+                                   or (playerIndexX != 500 + self.position[0] // 32 + config.screenWidth // 64
+                                       and self.position[0] % 32 >= 16)):
             self.position[0] += 1
 
         if self.canJump:
