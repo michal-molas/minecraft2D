@@ -44,7 +44,7 @@ class Player:
             self.isFalling = True
 
     def move(self, terrain):
-        print(self.position)
+        #print(self.position)
 
         keys = pygame.key.get_pressed()
 
@@ -62,7 +62,7 @@ class Player:
 
         # terrain.terrain[playerIndexY][playerIndexX] = "water"
 
-        print(self.position[0] % 32)
+        #print(self.position[0] % 32)
         if keys[pygame.K_a] and (terrain.terrain[playerIndexY][playerIndexX - 1] == "sky"
                                  or self.position[0] % 32 > 16
                                  or playerIndexX != 500 + self.position[0] // 32 + config.screenWidth // 64 + 1):
@@ -71,6 +71,11 @@ class Player:
                                    or (self.position[0] % 32 < 16)
                                    or (playerIndexX != 500 + self.position[0] // 32 + config.screenWidth // 64
                                        and self.position[0] % 32 >= 16)):
+            print(playerIndexX != 500 + self.position[0] // 32 + config.screenWidth // 64
+                  and self.position[0] % 32 > 16)
+            print(self.position[0] % 32 < 16)
+            print(terrain.terrain[playerIndexY][playerIndexX + 1] == "sky")
+            print(self.position[0] % 32)
             self.position[0] += 1
 
         if self.canJump:
