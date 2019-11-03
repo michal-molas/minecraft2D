@@ -32,13 +32,20 @@ class Player:
 
     def dig(self, terrain):
         indexY = 64 - self.position[1] // 32 + 1
-        indexX = 500 + self.position[0] // 32 + config.screenWidth // 64
+        if self.position[0] < 0:
+            if self.position[0] % 32 < 16:
+                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64
+            else:
+                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
+        else:
+            if self.position[0] % 32 < 16:
+                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64
+            else:
+                indexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
         terrain.terrain[indexY][indexX] = "water"
-        print(indexX)
-        print(indexY)
-
 
     def move(self, terrain):
+        print(self.position)
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
