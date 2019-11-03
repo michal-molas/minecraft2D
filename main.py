@@ -12,12 +12,12 @@ terrain = Terrain.Terrain()
 
 
 def update():
-    pass
+    player.move()
 
 
 def draw():
     window.fill((0, 0, 0))
-    terrain.draw(window)
+    terrain.draw(window, player)
     player.draw(window)
 
 
@@ -25,6 +25,7 @@ terrain.createTerrain()
 
 run = True
 while run:
+    #pygame.time.delay(200)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
