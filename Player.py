@@ -35,15 +35,15 @@ class Player:
             self.jumpCount = 44
 
     def digDown(self, terrain, x, y):
-        if self.rightWall and terrain.terrain[y + 1][x - 1] != "bedrock":
-            terrain.terrain[y + 1][x - 1] = "sky"
-        elif terrain.terrain[y + 1][x] != "bedrock":
-            terrain.terrain[y + 1][x] = "sky"
+        if self.rightWall and terrain.terrain[y + 1][x - 1].breakable:
+            terrain.terrain[y + 1][x - 1].changeType("sky")
+        elif terrain.terrain[y + 1][x].breakable:
+            terrain.terrain[y + 1][x].changeType("sky")
 
     def startFall(self, terrain, x, y):
         if (self.position[1] % 32 == 0 and
-                (terrain.terrain[y + 1][x] == "sky"
-                 or (terrain.terrain[y + 1][x - 1] == "sky" and self.rightWall))):
+                (terrain.terrain[y + 1][x].transparent
+                 or (terrain.terrain[y + 1][x - 1].transparent and self.rightWall))):
             self.isFalling = True
 
     def fall(self, terrain, x, y):
@@ -55,29 +55,29 @@ class Player:
 
     def moveLeft(self, terrain, x, y):
         if not self.leftWall:
-            if terrain.terrain[y][x] == "sky" or self.rightWall:
+            if terrain.terrain[y][x].transparent or self.rightWall:
                 self.position[0] -= 1
             self.canDigLeft = False
             self.canDigRight = False
-        elif terrain.terrain[y][x - 1] != "bedrock":
+        elif terrain.terrain[y][x - 1].breakable:
             self.canDigLeft = True
 
     def moveRight(self, terrain, x, y):
         if not self.rightWall:
-            if terrain.terrain[y][x] == "sky":
+            if terrain.terrain[y][x].transparent:
                 self.position[0] += 1
             self.canDigLeft = False
             self.canDigRight = False
-        elif terrain.terrain[y][x] != "bedrock":
+        elif terrain.terrain[y][x].breakable:
             self.canDigRight = True
 
     def checkWalls(self, terrain, x, y):
         if self.position[0] % 32 == 16:
-            if terrain.terrain[y][x - 1] != "sky":
+            if not terrain.terrain[y][x - 1].transparent:
                 self.leftWall = True
             else:
                 self.leftWall = False
-            if terrain.terrain[y][x] != "sky":
+            if not terrain.terrain[y][x].transparent:
                 self.rightWall = True
             else:
                 self.rightWall = False
@@ -87,21 +87,20 @@ class Player:
 
     def digLeftRight(self, terrain, x, y):
         if self.canDigLeft:
-            terrain.terrain[y][x - 1] = "sky"
+            terrain.terrain[y][x - 1].changeType("sky")
             self.canDigLeft = False
         if self.canDigRight:
-            terrain.terrain[y][x] = "sky"
+            terrain.terrain[y][x].changeType("sky")
             self.canDigRight = False
 
     def digUpOrStartJump(self, terrain, x, y):
-        if terrain.terrain[y - 1][x] == "sky" \
-                or (terrain.terrain[y - 1][x - 1] == "sky" and self.rightWall):
+        if terrain.terrain[y - 1][x].transparent or (terrain.terrain[y - 1][x - 1].transparent and self.rightWall):
             self.canJump = False
-        elif terrain.terrain[y - 1][x] != "bedrock":
+        elif terrain.terrain[y - 1][x].breakable:
             if not self.rightWall:
-                terrain.terrain[y - 1][x] = "sky"
+                terrain.terrain[y - 1][x].changeType("sky")
             else:
-                terrain.terrain[y - 1][x - 1] = "sky"
+                terrain.terrain[y - 1][x - 1].changeType("sky")
 
     def move(self, terrain):
 

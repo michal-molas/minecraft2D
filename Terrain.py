@@ -1,5 +1,6 @@
 import pygame
 import config
+import Block
 
 
 class Terrain:
@@ -18,14 +19,14 @@ class Terrain:
             terrainLayer = []
             for j in range(1000):
                 if i > 128:
-                    terrainLayer.append("bedrock")
+                    terrainLayer.append(Block.Block("bedrock"))
                 elif i > 64:
                     if j % 2 == 0:
-                        terrainLayer.append("dirt")
+                        terrainLayer.append(Block.Block("dirt"))
                     else:
-                        terrainLayer.append("stone")
+                        terrainLayer.append(Block.Block("stone"))
                 else:
-                    terrainLayer.append("sky")
+                    terrainLayer.append(Block.Block("sky"))
             self.terrain.append(terrainLayer)
 
     def draw(self, window, player):
@@ -42,15 +43,15 @@ class Terrain:
                 else:
                     posY = i * 32 - (32 - player.position[1] % 32)
 
-                if self.terrain[indexY][indexX] == "dirt":
+                if self.terrain[indexY][indexX].type == "dirt":
                     window.blit(self.dirtPng, (posX, posY))
-                elif self.terrain[indexY][indexX] == "water":
+                elif self.terrain[indexY][indexX].type == "water":
                     window.blit(self.waterPng, (posX, posY))
-                elif self.terrain[indexY][indexX] == "stone":
+                elif self.terrain[indexY][indexX].type == "stone":
                     window.blit(self.stonePng, (posX, posY))
-                elif self.terrain[indexY][indexX] == "sky":
+                elif self.terrain[indexY][indexX].type == "sky":
                     window.blit(self.skyPng, (posX, posY))
-                elif self.terrain[indexY][indexX] == "bedrock":
+                elif self.terrain[indexY][indexX].type == "bedrock":
                     window.blit(self.bedrockPng, (posX, posY))
-                elif self.terrain[indexY][indexX] == "grass":
+                elif self.terrain[indexY][indexX].type == "grass":
                     window.blit(self.grassPng, (posX, posY))
