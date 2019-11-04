@@ -9,13 +9,17 @@ class Terrain:
     dirtPng = pygame.image.load("dirt.png")
     waterPng = pygame.image.load("water.png")
     stonePng = pygame.image.load("stone.png")
+    grassPng = pygame.image.load("grass.png")
     skyPng = pygame.image.load("sky.png")
+    bedrockPng = pygame.image.load("bedrock.png")
 
     def createTerrain(self):
-        for i in range(128):
+        for i in range(140):
             terrainLayer = []
             for j in range(1000):
-                if i > 64:
+                if i > 128:
+                    terrainLayer.append("bedrock")
+                elif i > 64:
                     if j % 2 == 0:
                         terrainLayer.append("dirt")
                     else:
@@ -46,3 +50,7 @@ class Terrain:
                     window.blit(self.stonePng, (posX, posY))
                 elif self.terrain[indexY][indexX] == "sky":
                     window.blit(self.skyPng, (posX, posY))
+                elif self.terrain[indexY][indexX] == "bedrock":
+                    window.blit(self.bedrockPng, (posX, posY))
+                elif self.terrain[indexY][indexX] == "grass":
+                    window.blit(self.grassPng, (posX, posY))

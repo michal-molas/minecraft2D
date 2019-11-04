@@ -13,7 +13,6 @@ class Player:
     canJump = True
     jumpCount = 44
 
-    canDig = True
     alreadyDigged = False
 
     canDigLeft = False
@@ -36,20 +35,65 @@ class Player:
             self.jumpCount = 44
 
     def digDown(self, terrain, x, y):
-        if self.rightWall:
+        if self.rightWall and terrain.terrain[y + 1][x - 1] != "bedrock":
             terrain.terrain[y + 1][x - 1] = "sky"
-        else:
+        elif terrain.terrain[y + 1][x] != "bedrock":
             terrain.terrain[y + 1][x] = "sky"
 
-    def fall(self, terrain, x, y):
+    def startFall(self, terrain, x, y):
         if (self.position[1] % 32 == 0 and
                 (terrain.terrain[y + 1][x] == "sky"
                  or (terrain.terrain[y + 1][x - 1] == "sky" and self.rightWall))):
             self.isFalling = True
 
-    def move(self, terrain):
+    def fall(self, terrain, x, y):
+        if self.isFalling:
+            self.position[1] -= 2
+            if self.position[1] % 32 == 0:
+                self.isFalling = False
+                self.startFall(terrain, x, y)
 
-        print(self.rightWall)
+    def moveLeft(self, terrain, x, y):
+        if not self.leftWall:
+            if terrain.terrain[y][x] == "sky" or self.rightWall:
+                self.position[0] -= 1
+            self.canDigLeft = False
+            self.canDigRight = False
+        elif terrain.terrain[y][x - 1] != "bedrock":
+            self.canDigLeft = True
+
+    def moveRight(self, terrain, x, y):
+        if not self.rightWall:
+            if terrain.terrain[y][x] == "sky":
+                self.position[0] += 1
+            self.canDigLeft = False
+            self.canDigRight = False
+        elif terrain.terrain[y][x] != "bedrock":
+            self.canDigRight = True
+
+    def checkWalls(self, terrain, x, y):
+        if self.position[0] % 32 == 16:
+            if terrain.terrain[y][x - 1] != "sky":
+                self.leftWall = True
+            else:
+                self.leftWall = False
+            if terrain.terrain[y][x] != "sky":
+                self.rightWall = True
+            else:
+                self.rightWall = False
+        else:
+            self.leftWall = False
+            self.rightWall = False
+
+    def digLeftRight(self, terrain, x, y):
+        if self.canDigLeft:
+            terrain.terrain[y][x - 1] = "sky"
+            self.canDigLeft = False
+        if self.canDigRight:
+            terrain.terrain[y][x] = "sky"
+            self.canDigRight = False
+
+    def move(self, terrain):
 
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
@@ -60,51 +104,24 @@ class Player:
         else:
             playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
 
+        self.checkWalls(terrain, playerIndexX, playerIndexY)
+
         if keys[pygame.K_a]:
-            if not self.leftWall:
-                if terrain.terrain[playerIndexY][playerIndexX] == "sky" or self.rightWall:
-                    self.position[0] -= 1
-                    if self.position[0] % 32 == 16 and terrain.terrain[playerIndexY][playerIndexX - 1] != "sky":
-                        self.leftWall = True
-                    else:
-                        self.leftWall = False
-                        self.rightWall = False
-                self.canDigLeft = False
-                self.canDigRight = False
-            else:
-                self.canDigLeft = True
+            self.moveLeft(terrain, playerIndexX, playerIndexY)
 
         if keys[pygame.K_d]:
-            if not self.rightWall:
-                if terrain.terrain[playerIndexY][playerIndexX] == "sky":
-                    self.position[0] += 1
-                    if self.position[0] % 32 == 16 and terrain.terrain[playerIndexY][playerIndexX + 1] != "sky":
-                        self.rightWall = True
-                    else:
-                        self.leftWall = False
-                        self.rightWall = False
-                self.canDigLeft = False
-                self.canDigRight = False
-            else:
-                self.canDigRight = True
+            self.moveRight(terrain, playerIndexX, playerIndexY)
 
         if mouse[0]:
-            if self.canDigLeft:
-                terrain.terrain[playerIndexY][playerIndexX - 1] = "sky"
-                self.leftWall = False
-                self.canDigLeft = False
-            if self.canDigRight:
-                terrain.terrain[playerIndexY][playerIndexX] = "sky"
-                self.rightWall = False
-                self.canDigRight = False
+            self.digLeftRight(terrain, playerIndexX, playerIndexY)
 
         if self.canJump:
-            self.fall(terrain, playerIndexX, playerIndexY)
+            self.startFall(terrain, playerIndexX, playerIndexY)
             if keys[pygame.K_w] and not self.isFalling:
                 if terrain.terrain[playerIndexY - 1][playerIndexX] == "sky"\
                         or (terrain.terrain[playerIndexY - 1][playerIndexX - 1] == "sky" and self.rightWall):
                     self.canJump = False
-                else:
+                elif terrain.terrain[playerIndexY - 1][playerIndexX] != "bedrock":
                     if not self.rightWall:
                         terrain.terrain[playerIndexY - 1][playerIndexX] = "sky"
                     else:
@@ -118,18 +135,7 @@ class Player:
         if not keys[pygame.K_s]:
             self.alreadyDigged = False
 
-        # falling
-        if self.isFalling:
-            self.position[1] -= 2
-            if self.position[1] % 32 == 0:
-                self.isFalling = False
-                self.fall(terrain, playerIndexX, playerIndexY)
-        # falling end
-
-        if terrain.terrain[playerIndexY][playerIndexX - 1] == "sky":
-            self.leftWall = False
-        if terrain.terrain[playerIndexY][playerIndexX + 1] == "sky":
-            self.rightWall = False
+        self.fall(terrain, playerIndexX, playerIndexY)
 
     def draw(self, window):
         window.blit(self.playerPng, (32*20, 32*10))
