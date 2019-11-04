@@ -1,6 +1,5 @@
 import config
 import pygame
-import Terrain
 
 
 class Player:
@@ -12,33 +11,24 @@ class Player:
     playerPng = pygame.image.load("player.png")
 
     canJump = True
-    jumpHeight = 44
-    jumpCount = jumpHeight
+    jumpCount = 44
 
     canDig = True
     alreadyDigged = False
 
     isFalling = False
-    fallCount = 0
 
-    lastGround = ""
     leftWall = False
     rightWall = False
 
     def jump(self):
         if self.jumpCount > 0:
-            if self.jumpCount > 3 * self.jumpHeight // 4:
-                self.position[1] += 3
-            elif self.jumpCount > 2 * self.jumpHeight // 4:
-                self.position[1] += 1
-            elif self.jumpCount > self.jumpHeight // 4:
-                self.position[1] -= 1
-            else:
-                self.position[1] -= 3
-            self.jumpCount -= 1
+            self.jumpCount -= 2
+            self.position[1] += 2
         else:
+            self.isFalling = True
             self.canJump = True
-            self.jumpCount = self.jumpHeight
+            self.jumpCount = 44
 
     def dig(self, terrain, x, y):
         if self.rightWall:
@@ -49,10 +39,12 @@ class Player:
     def fall(self, terrain, x, y):
         if (self.position[1] % 32 == 0 and
                 (terrain.terrain[y + 1][x] == "sky"
-                 or (terrain.terrain[y + 1][x - 1] == "sky" and self.position[0] % 32 == 16))):
+                 or (terrain.terrain[y + 1][x - 1] == "sky" and self.rightWall))):
             self.isFalling = True
 
     def move(self, terrain):
+
+        print(self.rightWall)
 
         keys = pygame.key.get_pressed()
 
@@ -62,19 +54,18 @@ class Player:
         else:
             playerIndexX = 500 + self.position[0] // 32 + config.screenWidth // 64 + 1
 
-        if keys[pygame.K_a] and ((terrain.terrain[playerIndexY][playerIndexX] == "sky" and self.position[0] % 32 != 16)
-                                 or (terrain.terrain[playerIndexY][playerIndexX - 1] == "sky"
-                                     and terrain.terrain[playerIndexY][playerIndexX] != "sky"
-                                     and self.position[0] % 32 == 16)):
+        if keys[pygame.K_a] and (terrain.terrain[playerIndexY][playerIndexX] == "sky" and not self.leftWall
+                                 or self.rightWall
+                                 or (self.leftWall and terrain.terrain[playerIndexY][playerIndexX - 1] == "sky")):
             self.position[0] -= 1
-            if self.position[0] % 32 == 16:
+            if self.position[0] % 32 == 16 and terrain.terrain[playerIndexY][playerIndexX - 1] != "sky":
                 self.leftWall = True
             else:
                 self.leftWall = False
                 self.rightWall = False
         elif keys[pygame.K_d] and (terrain.terrain[playerIndexY][playerIndexX] == "sky"):
             self.position[0] += 1
-            if self.position[0] % 32 == 16:
+            if self.position[0] % 32 == 16 and terrain.terrain[playerIndexY][playerIndexX + 1] != "sky":
                 self.rightWall = True
             else:
                 self.leftWall = False
@@ -96,11 +87,9 @@ class Player:
         # falling
         if self.isFalling:
             self.position[1] -= 2
-            self.fallCount += 2
-
-        if self.fallCount == 32:
-            self.fallCount = 0
-            self.isFalling = False
+            if self.position[1] % 32 == 0:
+                self.isFalling = False
+                self.fall(terrain, playerIndexX, playerIndexY)
         # falling end
 
     def draw(self, window):
