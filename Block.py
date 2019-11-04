@@ -4,8 +4,7 @@ class Block:
     transparent = False
 
     def __init__(self, t):
-        self.type = t
-        self.update()
+        self.changeType(t)
 
     def update(self):
         if self.type == "bedrock":
