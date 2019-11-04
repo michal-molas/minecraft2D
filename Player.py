@@ -93,6 +93,16 @@ class Player:
             terrain.terrain[y][x] = "sky"
             self.canDigRight = False
 
+    def digUpOrStartJump(self, terrain, x, y):
+        if terrain.terrain[y - 1][x] == "sky" \
+                or (terrain.terrain[y - 1][x - 1] == "sky" and self.rightWall):
+            self.canJump = False
+        elif terrain.terrain[y - 1][x] != "bedrock":
+            if not self.rightWall:
+                terrain.terrain[y - 1][x] = "sky"
+            else:
+                terrain.terrain[y - 1][x - 1] = "sky"
+
     def move(self, terrain):
 
         keys = pygame.key.get_pressed()
@@ -118,14 +128,7 @@ class Player:
         if self.canJump:
             self.startFall(terrain, playerIndexX, playerIndexY)
             if keys[pygame.K_w] and not self.isFalling:
-                if terrain.terrain[playerIndexY - 1][playerIndexX] == "sky"\
-                        or (terrain.terrain[playerIndexY - 1][playerIndexX - 1] == "sky" and self.rightWall):
-                    self.canJump = False
-                elif terrain.terrain[playerIndexY - 1][playerIndexX] != "bedrock":
-                    if not self.rightWall:
-                        terrain.terrain[playerIndexY - 1][playerIndexX] = "sky"
-                    else:
-                        terrain.terrain[playerIndexY - 1][playerIndexX - 1] = "sky"
+                self.digUpOrStartJump(terrain, playerIndexX, playerIndexY)
             if keys[pygame.K_s] and not self.alreadyDigged and not self.isFalling:
                 self.digDown(terrain, playerIndexX, playerIndexY)
                 self.alreadyDigged = True
