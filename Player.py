@@ -34,10 +34,14 @@ class Player:
             self.canJump = True
             self.jumpCount = 44
 
-    def digDown(self, terrain, x, y):
+    def digDown(self, terrain, x, y, eq):
         if self.rightWall and terrain.terrain[y + 1][x - 1].breakable:
+            if terrain.terrain[y + 1][x].collectable:
+                eq.setSlot(terrain.terrain[y + 1][x - 1].type)
             terrain.terrain[y + 1][x - 1].changeType("sky")
         elif terrain.terrain[y + 1][x].breakable:
+            if terrain.terrain[y + 1][x].collectable:
+                eq.setSlot(terrain.terrain[y + 1][x].type)
             terrain.terrain[y + 1][x].changeType("sky")
 
     def startFall(self, terrain, x, y):
@@ -85,24 +89,32 @@ class Player:
             self.leftWall = False
             self.rightWall = False
 
-    def digLeftRight(self, terrain, x, y):
+    def digLeftRight(self, terrain, x, y, eq):
         if self.canDigLeft:
+            if terrain.terrain[y][x - 1].collectable:
+                eq.setSlot(terrain.terrain[y][x - 1].type)
             terrain.terrain[y][x - 1].changeType("sky")
             self.canDigLeft = False
         if self.canDigRight:
+            if terrain.terrain[y][x].collectable:
+                eq.setSlot(terrain.terrain[y][x].type)
             terrain.terrain[y][x].changeType("sky")
             self.canDigRight = False
 
-    def digUpOrStartJump(self, terrain, x, y):
+    def digUpOrStartJump(self, terrain, x, y, eq):
         if terrain.terrain[y - 1][x].transparent or (terrain.terrain[y - 1][x - 1].transparent and self.rightWall):
             self.canJump = False
         elif terrain.terrain[y - 1][x].breakable:
             if not self.rightWall:
+                if terrain.terrain[y - 1][x].collectable:
+                    eq.setSlot(terrain.terrain[y - 1][x].type)
                 terrain.terrain[y - 1][x].changeType("sky")
             else:
+                if terrain.terrain[y - 1][x - 1].collectable:
+                    eq.setSlot(terrain.terrain[y - 1][x - 1].type)
                 terrain.terrain[y - 1][x - 1].changeType("sky")
 
-    def move(self, terrain):
+    def move(self, terrain, eq):
 
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
@@ -122,14 +134,14 @@ class Player:
             self.moveRight(terrain, playerIndexX, playerIndexY)
 
         if mouse[0]:
-            self.digLeftRight(terrain, playerIndexX, playerIndexY)
+            self.digLeftRight(terrain, playerIndexX, playerIndexY, eq)
 
         if self.canJump:
             self.startFall(terrain, playerIndexX, playerIndexY)
             if keys[pygame.K_w] and not self.isFalling:
-                self.digUpOrStartJump(terrain, playerIndexX, playerIndexY)
+                self.digUpOrStartJump(terrain, playerIndexX, playerIndexY, eq)
             if keys[pygame.K_s] and not self.alreadyDigged and not self.isFalling:
-                self.digDown(terrain, playerIndexX, playerIndexY)
+                self.digDown(terrain, playerIndexX, playerIndexY, eq)
                 self.alreadyDigged = True
         else:
             self.jump()
