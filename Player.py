@@ -36,10 +36,14 @@ class Player:
 
     def digDown(self, terrain, x, y, eq):
         if self.rightWall and terrain.terrain[y + 1][x - 1].breakable:
+            if terrain.terrain[y + 1][x].type == "tree":
+                self.cutTree(terrain, x, y + 1, eq)
             if terrain.terrain[y + 1][x].collectable:
                 eq.setSlot(terrain.terrain[y + 1][x - 1].type)
             terrain.terrain[y + 1][x - 1].changeType("sky")
         elif terrain.terrain[y + 1][x].breakable:
+            if terrain.terrain[y + 1][x].type == "tree":
+                self.cutTree(terrain, x, y + 1, eq)
             if terrain.terrain[y + 1][x].collectable:
                 eq.setSlot(terrain.terrain[y + 1][x].type)
             terrain.terrain[y + 1][x].changeType("sky")
@@ -91,11 +95,15 @@ class Player:
 
     def digLeftRight(self, terrain, x, y, eq):
         if self.canDigLeft:
+            if terrain.terrain[y][x - 1].type == "tree":
+                self.cutTree(terrain, x - 1, y, eq)
             if terrain.terrain[y][x - 1].collectable:
                 eq.setSlot(terrain.terrain[y][x - 1].type)
             terrain.terrain[y][x - 1].changeType("sky")
             self.canDigLeft = False
         if self.canDigRight:
+            if terrain.terrain[y][x].type == "tree":
+                self.cutTree(terrain, x, y, eq)
             if terrain.terrain[y][x].collectable:
                 eq.setSlot(terrain.terrain[y][x].type)
             terrain.terrain[y][x].changeType("sky")
@@ -106,13 +114,27 @@ class Player:
             self.canJump = False
         elif terrain.terrain[y - 1][x].breakable:
             if not self.rightWall:
+                if terrain.terrain[y - 1][x].type == "tree":
+                    self.cutTree(terrain, x, y - 1, eq)
                 if terrain.terrain[y - 1][x].collectable:
                     eq.setSlot(terrain.terrain[y - 1][x].type)
                 terrain.terrain[y - 1][x].changeType("sky")
             else:
+                if terrain.terrain[y - 1][x - 1].type == "tree":
+                    self.cutTree(terrain, x - 1, y - 1, eq)
                 if terrain.terrain[y - 1][x - 1].collectable:
                     eq.setSlot(terrain.terrain[y - 1][x - 1].type)
                 terrain.terrain[y - 1][x - 1].changeType("sky")
+
+    def cutTree(self, terrain, x, y, eq):
+        i = 1
+        while terrain.terrain[y - i][x].type == "tree":
+            eq.setSlot(terrain.terrain[y - i][x].type)
+            terrain.terrain[y - i][x].changeType("sky")
+            i += 1
+        for n in range(3):
+            for m in range(3):
+                terrain.terrain[y - i - n][x - 1 + m].changeType("sky")
 
     def move(self, terrain, eq):
 
