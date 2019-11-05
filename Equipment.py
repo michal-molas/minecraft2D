@@ -1,4 +1,5 @@
 import pygame
+import Slot
 
 
 class Equipment:
@@ -14,27 +15,31 @@ class Equipment:
 
     def __init__(self):
         for i in range(10):
-            self.barSlots.append("empty")
+            self.barSlots.append(Slot.Slot("empty"))
 
     def drawBar(self, window):
         for i in range(10):
-            if self.barSlots[i] == "empty":
+            if self.barSlots[i].item == "empty":
                 window.blit(self.slotPng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "dirt":
+            elif self.barSlots[i].item == "dirt":
                 window.blit(self.slotDirtPng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "tree":
+            elif self.barSlots[i].item == "tree":
                 window.blit(self.slotTreePng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "stone":
+            elif self.barSlots[i].item == "stone":
                 window.blit(self.slotStonePng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "iron":
+            elif self.barSlots[i].item == "iron":
                 window.blit(self.slotIronPng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "gold":
+            elif self.barSlots[i].item == "gold":
                 window.blit(self.slotGoldPng, (480 + i * 32, 576))
-            elif self.barSlots[i] == "diamond":
+            elif self.barSlots[i].item == "diamond":
                 window.blit(self.slotDiamondPng, (480 + i * 32, 576))
 
     def setSlot(self, item):
         for i in range(10):
-            if self.barSlots[i] == "empty":
-                self.barSlots[i] = item
+            print(type(item))
+            if self.barSlots[i].item == item and self.barSlots[i].quantity != 64:
+                self.barSlots[i].quantity += 1
+                break
+            elif self.barSlots[i].item == "empty":
+                self.barSlots[i] = Slot.Slot(item)
                 break
