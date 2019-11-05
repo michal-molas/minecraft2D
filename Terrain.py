@@ -16,6 +16,9 @@ class Terrain:
     bedrockPng = pygame.image.load("bedrock.png")
     treePng = pygame.image.load("tree.png")
     leavesPng = pygame.image.load("leaves.png")
+    ironPng = pygame.image.load("iron.png")
+    goldPng = pygame.image.load("gold.png")
+    diamondPng = pygame.image.load("diamond.png")
 
     def createTerrain(self):
         for i in range(140):
@@ -37,11 +40,36 @@ class Terrain:
                     terrainLayer.append(Block.Block("sky"))
             self.terrain.append(terrainLayer)
 
+        self.createResources()
         self.createForestBiome(300, 600)
 
     def createForestBiome(self, a, b):
         for i in range((b-a)//4):
             self.createTree(a, b)
+
+    def createResources(self):
+        for i in range(80, 129):
+            for j in range(1000):
+                self.createIron(j, i)
+                if i > 90:
+                    self.createGold(j, i)
+                if i > 110:
+                    self.createDiamonds(j, i)
+
+    def createIron(self, x, y):
+        rand = random.randint(0, 50)
+        if rand == 0:
+            self.terrain[y][x] = Block.Block("iron")
+
+    def createGold(self, x, y):
+        rand = random.randint(0, 200)
+        if rand == 0:
+            self.terrain[y][x] = Block.Block("gold")
+
+    def createDiamonds(self, x, y):
+        rand = random.randint(0, 1000)
+        if rand == 0:
+            self.terrain[y][x] = Block.Block("diamond")
 
     def createTree(self, a, b):
         x = random.randint(a, b)
@@ -98,3 +126,9 @@ class Terrain:
                     window.blit(self.treePng, (posX, posY))
                 elif self.terrain[indexY][indexX].type == "leaves":
                     window.blit(self.leavesPng, (posX, posY))
+                elif self.terrain[indexY][indexX].type == "iron":
+                    window.blit(self.ironPng, (posX, posY))
+                elif self.terrain[indexY][indexX].type == "gold":
+                    window.blit(self.goldPng, (posX, posY))
+                elif self.terrain[indexY][indexX].type == "diamond":
+                    window.blit(self.diamondPng, (posX, posY))
