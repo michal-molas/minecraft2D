@@ -11,6 +11,10 @@ class Equipment:
     slotGoldPng = pygame.image.load("slotGold.png")
     slotDiamondPng = pygame.image.load("slotDiamond.png")
 
+    pygame.font.init()
+
+    quantityFont = pygame.font.SysFont("arial", 16)
+
     barSlots = []
 
     def __init__(self):
@@ -33,13 +37,16 @@ class Equipment:
                 window.blit(self.slotGoldPng, (480 + i * 32, 576))
             elif self.barSlots[i].item == "diamond":
                 window.blit(self.slotDiamondPng, (480 + i * 32, 576))
+            if self.barSlots[i].item != "empty":
+                quantityText = self.quantityFont.render(str(self.barSlots[i].quantity), True, (255, 255, 255))
+                window.blit(quantityText, (484 + i * 32, 588))
 
     def setSlot(self, item):
         for i in range(10):
-            print(type(item))
             if self.barSlots[i].item == item and self.barSlots[i].quantity != 64:
                 self.barSlots[i].quantity += 1
                 break
             elif self.barSlots[i].item == "empty":
                 self.barSlots[i] = Slot.Slot(item)
+                self.barSlots[i].quantity += 1
                 break
