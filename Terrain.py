@@ -23,6 +23,14 @@ class Terrain:
             for j in range(1000):
                 if i > 128:
                     terrainLayer.append(Block.Block("bedrock"))
+                elif i > 80:
+                    terrainLayer.append(Block.Block("stone"))
+                elif i > 69:
+                    rand = random.randint(0, 10)
+                    if rand > 79 - i:
+                        terrainLayer.append(Block.Block("stone"))
+                    else:
+                        terrainLayer.append(Block.Block("dirt"))
                 elif i > 64:
                     terrainLayer.append(Block.Block("dirt"))
                 else:
