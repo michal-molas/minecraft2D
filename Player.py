@@ -25,6 +25,9 @@ class Player:
     leftWall = False
     rightWall = False
 
+    eqOpened = False
+    ePressed = False
+
     def jump(self):
         if self.jumpCount > 0:
             self.jumpCount -= 2
@@ -170,6 +173,17 @@ class Player:
 
         if not keys[pygame.K_s]:
             self.alreadyDigged = False
+
+        if keys[pygame.K_e]:
+            if not self.ePressed:
+                if not self.eqOpened:
+                    self.eqOpened = True
+                else:
+                    self.eqOpened = False
+            self.ePressed = True
+
+        if not keys[pygame.K_e]:
+            self.ePressed = False
 
         self.fall(terrain, playerIndexX, playerIndexY)
 
