@@ -13,9 +13,9 @@ terrain = Terrain.Terrain()
 equipment = Equipment.Equipment()
 
 
-def update(events):
+def update(ev):
     player.move(terrain, equipment)
-    equipment.changePickedSlot(events)
+    equipment.changePickedSlot(ev)
 
 
 def draw():

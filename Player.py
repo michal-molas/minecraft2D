@@ -113,7 +113,9 @@ class Player:
             self.canDigRight = False
 
     def digUpOrStartJump(self, terrain, x, y, eq):
-        if terrain.terrain[y - 1][x].transparent or (terrain.terrain[y - 1][x - 1].transparent and self.rightWall):
+        if (terrain.terrain[y - 1][x].transparent or (terrain.terrain[y - 1][x - 1].transparent and self.rightWall)) \
+                and not (self.rightWall and not terrain.terrain[y - 1][x - 1].transparent
+                         and terrain.terrain[y - 1][x].transparent):
             self.canJump = False
         elif terrain.terrain[y - 1][x].breakable:
             if not self.rightWall:
