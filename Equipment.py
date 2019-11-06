@@ -99,18 +99,19 @@ class Equipment:
                                  + config.blockHeight * i + config.blockHeight * 2 // 5))
 
     def drawPickedSlot(self, window):
-        window.blit(self.pickedSlotPng, (config.screenWidth // 2 - 5 * config.blockWidth + self.pickedSlot * config.blockWidth
-                                   , config.screenHeight - 2 * config.blockHeight))
+        window.blit(self.pickedSlotPng, (config.screenWidth // 2 - 5 * config.blockWidth
+                                         + self.pickedSlot * config.blockWidth
+                                         , config.screenHeight - 2 * config.blockHeight))
 
-    def changePickedSlot(self):
-        event = pygame.event.wait()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 4:
-                self.pickedSlot += 1
-                self.pickedSlot %= 10
-            if event.button == 5:
-                self.pickedSlot -= 1
-                self.pickedSlot %= 10
+    def changePickedSlot(self, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:
+                    self.pickedSlot += 1
+                    self.pickedSlot %= 10
+                if event.button == 5:
+                    self.pickedSlot -= 1
+                    self.pickedSlot %= 10
 
     def setSlot(self, item):
         for i in range(40):

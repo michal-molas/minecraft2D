@@ -13,9 +13,9 @@ terrain = Terrain.Terrain()
 equipment = Equipment.Equipment()
 
 
-def update():
+def update(events):
     player.move(terrain, equipment)
-    equipment.changePickedSlot()
+    equipment.changePickedSlot(events)
 
 
 def draw():
@@ -32,11 +32,12 @@ terrain.createTerrain()
 
 run = True
 while run:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             run = False
 
-    update()
+    update(events)
 
     draw()
 
