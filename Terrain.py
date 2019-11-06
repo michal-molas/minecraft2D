@@ -73,7 +73,6 @@ class Terrain:
 
     def createTree(self, a, b):
         x = random.randint(a, b)
-        y = -1
         i = 139
         treeSize = random.randint(3, 5)
         freeSpace = True
@@ -85,12 +84,11 @@ class Terrain:
                             freeSpace = False
 
                 if freeSpace:
-                    y = i
                     for n in range(treeSize):
-                        self.terrain[y - n][x] = Block.Block("tree")
+                        self.terrain[i - n][x] = Block.Block("tree")
                     for n in range(3):
                         for m in range(3):
-                            self.terrain[y - 2 - treeSize + n][x - 1 + m] = Block.Block("leaves")
+                            self.terrain[i - 2 - treeSize + n][x - 1 + m] = Block.Block("leaves")
                 else:
                     self.createTree(a, b)
                 break

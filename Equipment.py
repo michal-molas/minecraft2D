@@ -27,27 +27,27 @@ class Equipment:
     def drawBar(self, window):
         for i in range(10):
             if self.barSlots[i].item == "empty":
-                window.blit(self.slotPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                           , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                           config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "dirt":
-                window.blit(self.slotDirtPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                               , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotDirtPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                               config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "tree":
-                window.blit(self.slotTreePng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                               , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotTreePng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                               config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "stone":
-                window.blit(self.slotStonePng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                                , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotStonePng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                                config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "iron":
-                window.blit(self.slotIronPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                               , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotIronPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                               config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "gold":
-                window.blit(self.slotGoldPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                                               , config.screenHeight - 2 * config.blockHeight))
+                window.blit(self.slotGoldPng, (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                                               config.screenHeight - 2 * config.blockHeight))
             elif self.barSlots[i].item == "diamond":
                 window.blit(self.slotDiamondPng,
-                            (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth
-                             , config.screenHeight - 2 * config.blockHeight))
+                            (config.screenWidth // 2 - 5 * config.blockWidth + i * config.blockWidth,
+                             config.screenHeight - 2 * config.blockHeight))
             if self.barSlots[i].item != "empty":
                 quantityText = self.quantityFont.render(str(self.barSlots[i].quantity), True, (255, 255, 255))
                 x = config.screenWidth // 2 - 5 * config.blockWidth + config.blockWidth // 5 + i * config.blockWidth
@@ -91,8 +91,8 @@ class Equipment:
                                                       config.screenHeight - 7 * config.blockHeight
                                                       + config.blockHeight * i))
                 if self.barSlots[10 * (i + 1) + j].item != "empty":
-                    quantityText = self.quantityFont.render(str(self.barSlots[10 * (i + 1) + j].quantity)
-                                                            , True, (255, 255, 255))
+                    quantityText = self.quantityFont.render(str(self.barSlots[10 * (i + 1) + j].quantity),
+                                                            True, (255, 255, 255))
                     window.blit(quantityText,
                                 (config.screenWidth // 2 - 5 * config.blockWidth + config.blockWidth // 5
                                  + j * config.blockWidth, config.screenHeight - 7 * config.blockHeight
@@ -100,8 +100,8 @@ class Equipment:
 
     def drawPickedSlot(self, window):
         window.blit(self.pickedSlotPng, (config.screenWidth // 2 - 5 * config.blockWidth
-                                         + self.pickedSlot * config.blockWidth
-                                         , config.screenHeight - 2 * config.blockHeight))
+                                         + self.pickedSlot * config.blockWidth,
+                                         config.screenHeight - 2 * config.blockHeight))
 
     def changePickedSlot(self, events):
         for event in events:

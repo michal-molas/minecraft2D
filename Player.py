@@ -131,7 +131,8 @@ class Player:
                     eq.setSlot(terrain.terrain[y - 1][x - 1].type)
                 terrain.terrain[y - 1][x - 1].changeType("sky")
 
-    def cutTree(self, terrain, x, y, eq):
+    @staticmethod
+    def cutTree(terrain, x, y, eq):
         i = 1
         while terrain.terrain[y - i][x].type == "tree":
             eq.setSlot(terrain.terrain[y - i][x].type)
