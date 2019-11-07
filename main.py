@@ -5,7 +5,7 @@ import Terrain
 import Equipment
 
 pygame.init()
-window = pygame.display.set_mode((config.screenWidth, config.screenHeight))
+window = pygame.display.set_mode((config.screen_width, config.screen_height))
 pygame.display.set_caption("Minecraft2D")
 
 player = Player.Player()
@@ -15,20 +15,20 @@ equipment = Equipment.Equipment()
 
 def update(ev):
     player.move(terrain, equipment)
-    equipment.changePickedSlot(ev)
+    equipment.change_picked_slot(ev)
 
 
 def draw():
     window.fill((0, 0, 0))
     terrain.draw(window, player)
     player.draw(window)
-    equipment.drawBar(window)
-    if player.eqOpened:
-        equipment.drawEq(window)
-    equipment.drawPickedSlot(window)
+    equipment.draw_bar(window)
+    if player.eq_opened:
+        equipment.draw_eq(window)
+    equipment.draw_picked_slot(window)
 
 
-terrain.createTerrain()
+terrain.create_terrain()
 
 run = True
 while run:

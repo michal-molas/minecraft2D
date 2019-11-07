@@ -8,125 +8,128 @@ class Terrain:
 
     terrain = []
 
-    dirtPng = pygame.image.load("dirt.png")
-    waterPng = pygame.image.load("water.png")
-    stonePng = pygame.image.load("stone.png")
-    grassPng = pygame.image.load("grass.png")
-    skyPng = pygame.image.load("sky.png")
-    bedrockPng = pygame.image.load("bedrock.png")
-    treePng = pygame.image.load("tree.png")
-    leavesPng = pygame.image.load("leaves.png")
-    ironPng = pygame.image.load("iron.png")
-    goldPng = pygame.image.load("gold.png")
-    diamondPng = pygame.image.load("diamond.png")
+    world_size_x = 1000
+    world_size_y = 140
 
-    def createTerrain(self):
-        for i in range(140):
-            terrainLayer = []
+    dirt_png = pygame.image.load("dirt.png")
+    water_png = pygame.image.load("water.png")
+    stone_png = pygame.image.load("stone.png")
+    grass_png = pygame.image.load("grass.png")
+    sky_png = pygame.image.load("sky.png")
+    bedrock_png = pygame.image.load("bedrock.png")
+    tree_png = pygame.image.load("tree.png")
+    leaves_png = pygame.image.load("leaves.png")
+    iron_png = pygame.image.load("iron.png")
+    gold_png = pygame.image.load("gold.png")
+    diamond_png = pygame.image.load("diamond.png")
+
+    def create_terrain(self):
+        for i in range(self.world_size_y):
+            terrain_layer = []
             for j in range(1000):
                 if i > 128:
-                    terrainLayer.append(Block.Block("bedrock"))
+                    terrain_layer.append(Block.Block("bedrock"))
                 elif i > 80:
-                    terrainLayer.append(Block.Block("stone"))
+                    terrain_layer.append(Block.Block("stone"))
                 elif i > 69:
                     rand = random.randint(0, 10)
                     if rand > 79 - i:
-                        terrainLayer.append(Block.Block("stone"))
+                        terrain_layer.append(Block.Block("stone"))
                     else:
-                        terrainLayer.append(Block.Block("dirt"))
+                        terrain_layer.append(Block.Block("dirt"))
                 elif i > 64:
-                    terrainLayer.append(Block.Block("dirt"))
+                    terrain_layer.append(Block.Block("dirt"))
                 else:
-                    terrainLayer.append(Block.Block("sky"))
-            self.terrain.append(terrainLayer)
+                    terrain_layer.append(Block.Block("sky"))
+            self.terrain.append(terrain_layer)
 
-        self.createResources()
-        self.createForestBiome(300, 600)
+        self.create_resources()
+        self.create_forest_biome(300, 600)
 
-    def createForestBiome(self, a, b):
+    def create_forest_biome(self, a, b):
         for i in range((b-a)//4):
-            self.createTree(a, b)
+            self.create_tree(a, b)
 
-    def createResources(self):
+    def create_resources(self):
         for i in range(80, 129):
             for j in range(1000):
-                self.createIron(j, i)
+                self.create_iron(j, i)
                 if i > 90:
-                    self.createGold(j, i)
+                    self.create_gold(j, i)
                 if i > 110:
-                    self.createDiamonds(j, i)
+                    self.create_diamonds(j, i)
 
-    def createIron(self, x, y):
+    def create_iron(self, x, y):
         rand = random.randint(0, 50)
         if rand == 0:
             self.terrain[y][x] = Block.Block("iron")
 
-    def createGold(self, x, y):
+    def create_gold(self, x, y):
         rand = random.randint(0, 200)
         if rand == 0:
             self.terrain[y][x] = Block.Block("gold")
 
-    def createDiamonds(self, x, y):
+    def create_diamonds(self, x, y):
         rand = random.randint(0, 1000)
         if rand == 0:
             self.terrain[y][x] = Block.Block("diamond")
 
-    def createTree(self, a, b):
+    def create_tree(self, a, b):
         x = random.randint(a, b)
         i = 139
-        treeSize = random.randint(3, 5)
-        freeSpace = True
+        tree_size = random.randint(3, 5)
+        free_space = True
         while i >= 0:
             if self.terrain[i][x].type == "sky" and self.terrain[i+1][x].type == "dirt" and x != 520:
                 for n in range(5):
                     for m in (-1, 1):
                         if self.terrain[i-n][x+m].type != "sky":
-                            freeSpace = False
+                            free_space = False
 
-                if freeSpace:
-                    for n in range(treeSize):
+                if free_space:
+                    for n in range(tree_size):
                         self.terrain[i - n][x] = Block.Block("tree")
                     for n in range(3):
                         for m in range(3):
-                            self.terrain[i - 2 - treeSize + n][x - 1 + m] = Block.Block("leaves")
+                            self.terrain[i - 2 - tree_size + n][x - 1 + m] = Block.Block("leaves")
                 else:
-                    self.createTree(a, b)
+                    self.create_tree(a, b)
                 break
             i -= 1
 
     def draw(self, window, player):
-        for i in range(config.screenHeight // 32 + 2):
-            for j in range(config.screenWidth // 32 + 2):
-                indexY = i + 64 - (config.screenHeight//32) // 2 - player.position[1]//32 - 1
-                indexX = j + 500 + player.position[0] // 32
+        for i in range(config.screen_height // 32 + 2):
+            for j in range(config.screen_width // 32 + 2):
+                index_y = i + 64 - (config.screen_height//32) // 2 - player.position[1]//32 - 1
+                index_x = j + 500 + player.position[0] // 32
                 if player.position[0] >= 0:
-                    posX = j * 32 - player.position[0] % 32
+                    pos_x = j * 32 - player.position[0] % 32
                 else:
-                    posX = j * 32 + (32 - player.position[0] % 32) - 32
+                    pos_x = j * 32 + (32 - player.position[0] % 32) - 32
                 if player.position[1] >= 0:
-                    posY = i * 32 + player.position[1] % 32 - 32
+                    pos_y = i * 32 + player.position[1] % 32 - 32
                 else:
-                    posY = i * 32 - (32 - player.position[1] % 32)
+                    pos_y = i * 32 - (32 - player.position[1] % 32)
 
-                if self.terrain[indexY][indexX].type == "dirt":
-                    window.blit(self.dirtPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "water":
-                    window.blit(self.waterPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "stone":
-                    window.blit(self.stonePng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "sky":
-                    window.blit(self.skyPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "bedrock":
-                    window.blit(self.bedrockPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "grass":
-                    window.blit(self.grassPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "tree":
-                    window.blit(self.treePng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "leaves":
-                    window.blit(self.leavesPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "iron":
-                    window.blit(self.ironPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "gold":
-                    window.blit(self.goldPng, (posX, posY))
-                elif self.terrain[indexY][indexX].type == "diamond":
-                    window.blit(self.diamondPng, (posX, posY))
+                if self.terrain[index_y][index_x].type == "dirt":
+                    window.blit(self.dirt_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "water":
+                    window.blit(self.water_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "stone":
+                    window.blit(self.stone_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "sky":
+                    window.blit(self.sky_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "bedrock":
+                    window.blit(self.bedrock_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "grass":
+                    window.blit(self.grass_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "tree":
+                    window.blit(self.tree_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "leaves":
+                    window.blit(self.leaves_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "iron":
+                    window.blit(self.iron_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "gold":
+                    window.blit(self.gold_png, (pos_x, pos_y))
+                elif self.terrain[index_y][index_x].type == "diamond":
+                    window.blit(self.diamond_png, (pos_x, pos_y))

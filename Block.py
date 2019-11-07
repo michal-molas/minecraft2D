@@ -5,7 +5,7 @@ class Block:
     collectable = True
 
     def __init__(self, t):
-        self.changeType(t)
+        self.change_type(t)
 
     def update(self):
         if self.type == "bedrock":
@@ -16,6 +16,6 @@ class Block:
                 or self.type == "grass":
             self.collectable = False
 
-    def changeType(self, t):
+    def change_type(self, t):
         self.type = t
         self.update()
