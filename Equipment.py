@@ -23,6 +23,8 @@ class Equipment:
     clicked_slot = None
     already_clicked = False
 
+    eq_opened = False
+
     def __init__(self):
         for i in range(40):
             self.slots.append(Slot.Slot("empty"))
@@ -140,7 +142,7 @@ class Equipment:
                 window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
                                                    + self.clicked_slot % 10 * 32,
                                                    config.screen_height - 2 * 32))
-            else:
+            elif self.eq_opened:
                 window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
                                                    + self.clicked_slot % 10 * 32,
                                                    config.screen_height - 8 * 32
@@ -159,7 +161,7 @@ class Equipment:
                                         config.screen_width // 2 - 4 * 32 + j * 32 \
                                         and config.screen_height - 2 * 32 < mouse_pos[1] < config.screen_height - 32:
                                     self.clicked_slot = i * 10 + j
-                            else:
+                            elif self.eq_opened:
                                 if config.screen_width // 2 - 5 * 32 + j * 32 < mouse_pos[0] < \
                                         config.screen_width // 2 - 4 * 32 + j * 32 \
                                         and config.screen_height - 8 * 32 + i * 32 < mouse_pos[1] <\

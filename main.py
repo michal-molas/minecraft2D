@@ -24,7 +24,7 @@ def draw():
     terrain.draw(window, player)
     player.draw(window)
     equipment.draw_bar(window)
-    if player.eq_opened:
+    if equipment.eq_opened:
         equipment.draw_eq(window)
     equipment.draw_picked_slot(window)
     equipment.draw_clicked_slot(window)

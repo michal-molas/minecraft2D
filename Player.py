@@ -25,7 +25,6 @@ class Player:
     left_wall = False
     right_wall = False
 
-    eq_opened = False
     e_pressed = False
 
     def jump(self):
@@ -179,10 +178,10 @@ class Player:
 
         if keys[pygame.K_e]:
             if not self.e_pressed:
-                if not self.eq_opened:
-                    self.eq_opened = True
+                if not eq.eq_opened:
+                    eq.eq_opened = True
                 else:
-                    self.eq_opened = False
+                    eq.eq_opened = False
             self.e_pressed = True
 
         if not keys[pygame.K_e]:
