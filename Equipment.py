@@ -19,7 +19,9 @@ class Equipment:
 
     slots = []
     picked_slot = 0
+
     clicked_slot = None
+    already_clicked = False
 
     def __init__(self):
         for i in range(40):
@@ -123,13 +125,14 @@ class Equipment:
 
     def set_slot(self, item):
         for i in range(40):
-            if self.slots[i].item == item and self.slots[i].quantity != 64:
+            if self.slots[i].item == item and self.slots[i].quantity < 64:
                 self.slots[i].quantity += 1
-                break
-            elif self.slots[i].item == "empty":
+                return
+        for i in range(40):
+            if self.slots[i].item == "empty":
                 self.slots[i] = Slot.Slot(item)
                 self.slots[i].quantity += 1
-                break
+                return
 
     def draw_clicked_slot(self, window):
         if self.clicked_slot is not None:
@@ -148,6 +151,7 @@ class Equipment:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
+                    last_clicked = self.clicked_slot
                     for i in range(4):
                         for j in range(10):
                             if i == 0:
@@ -161,4 +165,24 @@ class Equipment:
                                         and config.screen_height - 8 * 32 + i * 32 < mouse_pos[1] <\
                                         config.screen_height - 7 * 32 + i * 32:
                                     self.clicked_slot = i * 10 + j
-
+                    if last_clicked is not None:
+                        if self.slots[last_clicked].item != "empty":
+                            if last_clicked != self.clicked_slot:
+                                if self.slots[last_clicked].item != self.slots[self.clicked_slot].item:
+                                    temp = self.slots[last_clicked]
+                                    self.slots[last_clicked] = self.slots[self.clicked_slot]
+                                    self.slots[self.clicked_slot] = temp
+                                    self.clicked_slot = None
+                                else:
+                                    self.slots[self.clicked_slot].quantity = self.slots[self.clicked_slot].quantity \
+                                                                             + self.slots[last_clicked].quantity
+                                    self.slots[last_clicked] = Slot.Slot("empty")
+                                    if self.slots[self.clicked_slot].quantity > 64:
+                                        for i in range(self.slots[self.clicked_slot].quantity - 64):
+                                            self.set_slot(self.slots[self.clicked_slot].item)
+                                        self.slots[self.clicked_slot].quantity = 64
+                                    self.clicked_slot = None
+                            else:
+                                self.clicked_slot = None
+                        else:
+                            self.clicked_slot = None
