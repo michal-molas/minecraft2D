@@ -149,9 +149,9 @@ class Player:
 
         player_index_y = 64 - self.position[1] // 32
         if self.position[0] % 32 < 16:
-            player_index_x = 500 + self.position[0] // 32 + config.screen_width // 64
+            player_index_x = terrain.world_size_x // 2 + self.position[0] // 32 + config.screen_width // 64
         else:
-            player_index_x = 500 + self.position[0] // 32 + config.screen_width // 64 + 1
+            player_index_x = terrain.world_size_x // 2 + self.position[0] // 32 + config.screen_width // 64 + 1
 
         self.check_walls(terrain, player_index_x, player_index_y)
 
@@ -191,4 +191,4 @@ class Player:
         self.fall(terrain, player_index_x, player_index_y)
 
     def draw(self, window):
-        window.blit(self.player_png, (32*20, 32*10))
+        window.blit(self.player_png, (32 * config.screen_width // 64, 32 * config.screen_height // 64))

@@ -9,7 +9,6 @@ class Terrain:
     terrain = []
 
     world_size_x = 1000
-    world_size_y = 140
 
     dirt_png = pygame.image.load("dirt.png")
     water_png = pygame.image.load("water.png")
@@ -24,9 +23,9 @@ class Terrain:
     diamond_png = pygame.image.load("diamond.png")
 
     def create_terrain(self):
-        for i in range(self.world_size_y):
+        for i in range(140):
             terrain_layer = []
-            for j in range(1000):
+            for j in range(self.world_size_x):
                 if i > 128:
                     terrain_layer.append(Block.Block("bedrock"))
                 elif i > 80:
@@ -52,7 +51,7 @@ class Terrain:
 
     def create_resources(self):
         for i in range(80, 129):
-            for j in range(1000):
+            for j in range(self.world_size_x):
                 self.create_iron(j, i)
                 if i > 90:
                     self.create_gold(j, i)
@@ -101,7 +100,7 @@ class Terrain:
         for i in range(config.screen_height // 32 + 2):
             for j in range(config.screen_width // 32 + 2):
                 index_y = i + 64 - (config.screen_height//32) // 2 - player.position[1]//32 - 1
-                index_x = j + 500 + player.position[0] // 32
+                index_x = j + self.world_size_x // 2 + player.position[0] // 32
                 if player.position[0] >= 0:
                     pos_x = j * 32 - player.position[0] % 32
                 else:
