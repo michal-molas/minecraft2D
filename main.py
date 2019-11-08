@@ -16,6 +16,7 @@ equipment = Equipment.Equipment()
 def update(ev):
     player.move(terrain, equipment)
     equipment.change_picked_slot(ev)
+    equipment.click_slot(ev)
 
 
 def draw():
@@ -26,6 +27,7 @@ def draw():
     if player.eq_opened:
         equipment.draw_eq(window)
     equipment.draw_picked_slot(window)
+    equipment.draw_clicked_slot(window)
 
 
 terrain.create_terrain()

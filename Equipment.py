@@ -19,6 +19,7 @@ class Equipment:
 
     slots = []
     picked_slot = 0
+    clicked_slot = None
 
     def __init__(self):
         for i in range(40):
@@ -129,3 +130,35 @@ class Equipment:
                 self.slots[i] = Slot.Slot(item)
                 self.slots[i].quantity += 1
                 break
+
+    def draw_clicked_slot(self, window):
+        if self.clicked_slot is not None:
+            if self.clicked_slot < 10:
+                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
+                                                   + self.clicked_slot % 10 * 32,
+                                                   config.screen_height - 2 * 32))
+            else:
+                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
+                                                   + self.clicked_slot % 10 * 32,
+                                                   config.screen_height - 8 * 32
+                                                   + self.clicked_slot // 10 * 32))
+
+    def click_slot(self, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    for i in range(4):
+                        for j in range(10):
+                            if i == 0:
+                                if config.screen_width // 2 - 5 * 32 + j * 32 < mouse_pos[0] < \
+                                        config.screen_width // 2 - 4 * 32 + j * 32 \
+                                        and config.screen_height - 2 * 32 < mouse_pos[1] < config.screen_height - 32:
+                                    self.clicked_slot = i * 10 + j
+                            else:
+                                if config.screen_width // 2 - 5 * 32 + j * 32 < mouse_pos[0] < \
+                                        config.screen_width // 2 - 4 * 32 + j * 32 \
+                                        and config.screen_height - 8 * 32 + i * 32 < mouse_pos[1] <\
+                                        config.screen_height - 7 * 32 + i * 32:
+                                    self.clicked_slot = i * 10 + j
+
