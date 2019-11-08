@@ -6,7 +6,7 @@ class Player:
     screen_pos_x = config.screen_width
     screen_pos_y = config.screen_height
 
-    position = [0, 0]
+    position = None
 
     player_png = pygame.image.load("player.png")
 
@@ -26,6 +26,9 @@ class Player:
     right_wall = False
 
     e_pressed = False
+
+    def __init__(self, terrain):
+        self.position = [terrain.world_size_x * 32 // 2, 64 * 32]
 
     def jump(self):
         if self.jump_count > 0:
@@ -72,6 +75,8 @@ class Player:
         elif terrain.terrain[y][x - 1].breakable:
             self.can_dig_left = True
 
+    def move_left2(self, terrain, x, y):
+
     def move_right(self, terrain, x, y):
         if not self.right_wall:
             if terrain.terrain[y][x].transparent:
@@ -94,6 +99,29 @@ class Player:
         else:
             self.left_wall = False
             self.right_wall = False
+
+    def dig(self, terrain, x, y, eq, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                dif_x = mouse_pos[0] - 32 * config.screen_width // 64 - 16
+                player_right_dist = 32 * config.screen_width // 64 - 1 - self.position[0] % 32 - 16 - 32 * config.screen_width // 64 - 16
+                dif_y = 32 * config.screen_height // 64 + 16 - mouse_pos[1]
+                print(player_right_dist)
+                if player_right_dist < dif_x < player_right_dist - 32 and -16 < dif_y < 16:
+                    terrain.terrain[y][x - 1].change_type("sky")
+                elif 32 * config.screen_width // 64 + 32 < mouse_pos[0] < 32 * config.screen_width // 64 + 64 \
+                        and 32 * config.screen_height // 64 < mouse_pos[1] < 32 * config.screen_height // 64 + 32:
+                    # dig right
+                    pass
+                elif 32 * config.screen_width // 64 < mouse_pos[0] < 32 * config.screen_width // 64 + 32\
+                        and 32 * config.screen_height // 64 - 32 < mouse_pos[1] < 32 * config.screen_height // 64:
+                    # dig up
+                    pass
+                elif 32 * config.screen_width // 64 < mouse_pos[0] < 32 * config.screen_width // 64 + 32\
+                        and 32 * config.screen_height // 64 + 32 < mouse_pos[1] < 32 * config.screen_height // 64 + 64:
+                    # dig down
+                    pass
 
     def dig_left_right(self, terrain, x, y, eq):
         if self.can_dig_left:
@@ -141,18 +169,20 @@ class Player:
             for m in range(3):
                 terrain.terrain[y - i - n][x - 1 + m].change_type("sky")
 
-    def move(self, terrain, eq):
+    def move(self, terrain, eq, ev):
 
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
 
-        player_index_y = 64 - self.position[1] // 32
+        player_index_y = self.position[1] // 32
         if self.position[0] % 32 < 16:
-            player_index_x = terrain.world_size_x // 2 + self.position[0] // 32 + config.screen_width // 64
+            player_index_x = self.position[0] // 32 + config.screen_width // 64
         else:
-            player_index_x = terrain.world_size_x // 2 + self.position[0] // 32 + config.screen_width // 64 + 1
+            player_index_x = self.position[0] // 32 + config.screen_width // 64 + 1
 
         self.check_walls(terrain, player_index_x, player_index_y)
+
+        self.dig(terrain, player_index_x, player_index_y, eq, ev)
 
         if keys[pygame.K_a]:
             self.move_left(terrain, player_index_x, player_index_y)

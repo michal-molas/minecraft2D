@@ -8,7 +8,7 @@ class Terrain:
 
     terrain = []
 
-    world_size_x = 1000
+    world_size_x = 1280
 
     dirt_png = pygame.image.load("dirt.png")
     water_png = pygame.image.load("water.png")
@@ -99,16 +99,10 @@ class Terrain:
     def draw(self, window, player):
         for i in range(config.screen_height // 32 + 2):
             for j in range(config.screen_width // 32 + 2):
-                index_y = i + 64 - (config.screen_height//32) // 2 - player.position[1]//32 - 1
-                index_x = j + self.world_size_x // 2 + player.position[0] // 32
-                if player.position[0] >= 0:
-                    pos_x = j * 32 - player.position[0] % 32
-                else:
-                    pos_x = j * 32 + (32 - player.position[0] % 32) - 32
-                if player.position[1] >= 0:
-                    pos_y = i * 32 + player.position[1] % 32 - 32
-                else:
-                    pos_y = i * 32 - (32 - player.position[1] % 32)
+                index_y = i + player.position[1] // 32 - config.screen_height//64 - 1
+                index_x = j + player.position[0] // 32 - config.screen_width//64 - 1
+                pos_x = j * 32 - player.position[0] % 32
+                pos_y = i * 32 + player.position[1] % 32
 
                 if self.terrain[index_y][index_x].type == "dirt":
                     window.blit(self.dirt_png, (pos_x, pos_y))

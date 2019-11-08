@@ -8,13 +8,13 @@ pygame.init()
 window = pygame.display.set_mode((config.screen_width, config.screen_height))
 pygame.display.set_caption("Minecraft2D")
 
-player = Player.Player()
 terrain = Terrain.Terrain()
+player = Player.Player(terrain)
 equipment = Equipment.Equipment()
 
 
 def update(ev):
-    player.move(terrain, equipment)
+    player.move(terrain, equipment, ev)
     equipment.change_picked_slot(ev)
     equipment.click_slot(ev)
 
