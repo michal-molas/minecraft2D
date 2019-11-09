@@ -50,25 +50,22 @@ class Player:
         if self.position[1] % 32 != 0:
             self.block_y = self.position[1] // 32
 
-    def clicked_block(self, events):
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                dif_x = mouse_pos[0] - (self.POS_ON_SCREEN_X + 16)
-                dif_y = mouse_pos[1] - (self.POS_ON_SCREEN_Y + 32)
+    def clicked_block(self):
+        mouse_pos = pygame.mouse.get_pos()
+        dif_x = mouse_pos[0] - (self.POS_ON_SCREEN_X + 16)
+        dif_y = mouse_pos[1] - (self.POS_ON_SCREEN_Y + 32)
 
-                if not self.right_wall:
-                    clicked_block_x = self.block_x + (dif_x + self.position[0] % 32) // 32
-                else:
-                    clicked_block_x = self.block_x + dif_x // 32 + 1
+        if not self.right_wall:
+            clicked_block_x = self.block_x + (dif_x + self.position[0] % 32) // 32
+        else:
+            clicked_block_x = self.block_x + dif_x // 32 + 1
 
-                if self.position[1] % 32 != 0:
-                    clicked_block_y = self.block_y + (dif_y + self.position[1] % 32) // 32
-                else:
-                    clicked_block_y = self.block_y + dif_y // 32 + 1
+        if self.position[1] % 32 != 0:
+            clicked_block_y = self.block_y + (dif_y + self.position[1] % 32) // 32
+        else:
+            clicked_block_y = self.block_y + dif_y // 32 + 1
 
-                return clicked_block_x, clicked_block_y
-        return None
+        return clicked_block_x, clicked_block_y
 
     def jump(self):
         if self.jump_count > 0:
@@ -94,7 +91,7 @@ class Player:
     def dig(self, terrain, events, eq):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                clicked_block = self.clicked_block(events)
+                clicked_block = self.clicked_block()
                 if clicked_block is not None:
                     rel_blocks_x = clicked_block[0] - self.block_x
                     rel_blocks_y = clicked_block[1] - self.block_y
@@ -117,6 +114,34 @@ class Player:
                             if terrain.terrain[clicked_block[1]][clicked_block[0]].collectable:
                                 eq.set_slot(terrain.terrain[clicked_block[1]][clicked_block[0]].type)
                             terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
+
+    def place_block(self, terrain, events, eq):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and eq.slots[eq.picked_slot].item != "empty":
+                clicked_block = self.clicked_block()
+                if clicked_block is not None:
+
+                    rel_blocks_x = clicked_block[0] - self.block_x
+                    rel_blocks_y = clicked_block[1] - self.block_y
+
+                    if terrain.terrain[clicked_block[1]][clicked_block[0]].breakable:
+                        if (rel_blocks_x == 0 and (rel_blocks_y == 1 or rel_blocks_y == -1)) \
+                                or (rel_blocks_y == 0 and (rel_blocks_x == 1 or rel_blocks_x == -1)) \
+                                or (rel_blocks_y == -1 and rel_blocks_x == -1
+                                    and (terrain.terrain[clicked_block[1] + 1][clicked_block[0]].transparent
+                                         or terrain.terrain[clicked_block[1]][clicked_block[0] + 1].transparent)) \
+                                or (rel_blocks_y == -1 and rel_blocks_x == 1
+                                    and (terrain.terrain[clicked_block[1] + 1][clicked_block[0]].transparent
+                                         or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)) \
+                                or (rel_blocks_y == 1 and rel_blocks_x == -1
+                                    and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
+                                         or terrain.terrain[clicked_block[1]][clicked_block[0] + 1].transparent)) \
+                                or (rel_blocks_y == 1 and rel_blocks_x == 1
+                                    and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
+                                         or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
+                            terrain.terrain[clicked_block[1]][clicked_block[0]]\
+                                .change_type(eq.slots[eq.picked_slot].item)
+                            eq.remove_items(eq.picked_slot, 1)
 
     def move(self, events, terrain, eq):
         for event in events:
@@ -167,6 +192,7 @@ class Player:
         self.move(events, terrain, eq)
         self.update_current_block()
         self.dig(terrain, events, eq)
+        self.place_block(terrain, events, eq)
 
     def draw(self, window):
         window.blit(self.player_png, (self.POS_ON_SCREEN_X, self.POS_ON_SCREEN_Y))

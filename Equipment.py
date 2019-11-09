@@ -136,6 +136,12 @@ class Equipment:
                 self.slots[i].quantity += 1
                 return
 
+    def remove_items(self, slot_index, qu):
+        self.slots[slot_index].quantity -= qu
+        if self.slots[slot_index].quantity <= 0:
+            self.slots[slot_index].item = "empty"
+            self.slots[slot_index].quantity = 0
+
     def draw_clicked_slot(self, window):
         if self.clicked_slot is not None:
             if self.clicked_slot < 10:
