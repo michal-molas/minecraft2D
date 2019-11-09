@@ -27,23 +27,26 @@ class Terrain:
             terrain_layer = []
             for j in range(self.world_size_x):
                 if i > 128:
-                    terrain_layer.append(Block.Block("bedrock"))
+                    terrain_layer.append(Block.Block("bedrock", j, i))
                 elif i > 80:
-                    terrain_layer.append(Block.Block("stone"))
+                    terrain_layer.append(Block.Block("stone", j, i))
                 elif i > 69:
                     rand = random.randint(0, 10)
                     if rand > 79 - i:
-                        terrain_layer.append(Block.Block("stone"))
+                        terrain_layer.append(Block.Block("stone", j, i))
                     else:
-                        terrain_layer.append(Block.Block("dirt"))
+                        terrain_layer.append(Block.Block("dirt", j, i))
                 elif i > 64:
-                    terrain_layer.append(Block.Block("dirt"))
+                    if j % 2 == 0:
+                        terrain_layer.append(Block.Block("dirt", j, i))
+                    else:
+                        terrain_layer.append(Block.Block("stone", j, i))
                 else:
-                    terrain_layer.append(Block.Block("sky"))
+                    terrain_layer.append(Block.Block("sky", j, i))
             self.terrain.append(terrain_layer)
 
         self.create_resources()
-        self.create_forest_biome(300, 600)
+        self.create_forest_biome(600, 900)
 
     def create_forest_biome(self, a, b):
         for i in range((b-a)//4):
@@ -61,17 +64,17 @@ class Terrain:
     def create_iron(self, x, y):
         rand = random.randint(0, 50)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("iron")
+            self.terrain[y][x].change_type("iron")
 
     def create_gold(self, x, y):
         rand = random.randint(0, 200)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("gold")
+            self.terrain[y][x].change_type("gold")
 
     def create_diamonds(self, x, y):
         rand = random.randint(0, 1000)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("diamond")
+            self.terrain[y][x].change_type("diamond")
 
     def create_tree(self, a, b):
         x = random.randint(a, b)
@@ -87,10 +90,10 @@ class Terrain:
 
                 if free_space:
                     for n in range(tree_size):
-                        self.terrain[i - n][x] = Block.Block("tree")
+                        self.terrain[i - n][x].change_type("tree")
                     for n in range(3):
                         for m in range(3):
-                            self.terrain[i - 2 - tree_size + n][x - 1 + m] = Block.Block("leaves")
+                            self.terrain[i - 2 - tree_size + n][x - 1 + m].change_type("leaves")
                 else:
                     self.create_tree(a, b)
                 break
@@ -99,10 +102,11 @@ class Terrain:
     def draw(self, window, player):
         for i in range(config.screen_height // 32 + 2):
             for j in range(config.screen_width // 32 + 2):
-                index_y = i + player.position[1] // 32 - config.screen_height//64 - 1
-                index_x = j + player.position[0] // 32 - config.screen_width//64 - 1
+                index_y = i + player.position[1] // 32 - config.screen_height // 64 - 1
+                index_x = j + player.position[0] // 32 - config.screen_width // 64
+
                 pos_x = j * 32 - player.position[0] % 32
-                pos_y = i * 32 + player.position[1] % 32
+                pos_y = i * 32 - player.position[1] % 32
 
                 if self.terrain[index_y][index_x].type == "dirt":
                     window.blit(self.dirt_png, (pos_x, pos_y))

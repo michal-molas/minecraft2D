@@ -14,7 +14,8 @@ equipment = Equipment.Equipment()
 
 
 def update(ev):
-    player.move(terrain, equipment, ev)
+    player.update(ev, terrain, equipment)
+    # player.move(terrain, equipment, ev)
     equipment.change_picked_slot(ev)
     equipment.click_slot(ev)
 

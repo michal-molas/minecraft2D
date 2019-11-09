@@ -6,6 +6,9 @@ class Player:
     screen_pos_x = config.screen_width
     screen_pos_y = config.screen_height
 
+    block_x = None
+    block_y = None
+
     position = None
 
     player_png = pygame.image.load("player.png")
@@ -27,18 +30,160 @@ class Player:
 
     e_pressed = False
 
+    POS_ON_SCREEN_X = 32 * config.screen_width // 64 - 16
+    POS_ON_SCREEN_Y = 32 * config.screen_height // 64
+
+    keys_pressed = {
+        "e": False,
+        "a": False,
+        "d": False,
+    }
+
     def __init__(self, terrain):
-        self.position = [terrain.world_size_x * 32 // 2, 64 * 32]
+        self.position = [terrain.world_size_x * 32 // 2 + 16, 64 * 32 + 32]
+        self.block_x = self.position[0] // 32
+        self.block_y = self.position[1] // 32 - 1
+
+    def update_current_block(self):
+        if self.position[0] % 32 != 0:
+            self.block_x = self.position[0] // 32
+        if self.position[1] % 32 != 0:
+            self.block_y = self.position[1] // 32
+
+    def clicked_block(self, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                dif_x = mouse_pos[0] - (self.POS_ON_SCREEN_X + 16)
+                dif_y = mouse_pos[1] - (self.POS_ON_SCREEN_Y + 32)
+
+                if not self.right_wall:
+                    clicked_block_x = self.block_x + (dif_x + self.position[0] % 32) // 32
+                else:
+                    clicked_block_x = self.block_x + dif_x // 32 + 1
+
+                if self.position[1] % 32 != 0:
+                    clicked_block_y = self.block_y + (dif_y + self.position[1] % 32) // 32
+                else:
+                    clicked_block_y = self.block_y + dif_y // 32 + 1
+
+                return clicked_block_x, clicked_block_y
+        return None
 
     def jump(self):
         if self.jump_count > 0:
             self.jump_count -= 2
-            self.position[1] += 2
+            self.position[1] -= 2
+
         else:
             self.is_falling = True
             self.can_jump = True
             self.jump_count = 44
 
+    def start_fall(self, terrain):
+        if self.position[1] % 32 == 0 and terrain.terrain[self.block_y + 1][self.block_x].transparent:
+            self.is_falling = True
+
+    def fall(self, terrain):
+        if self.is_falling:
+            self.position[1] += 2
+            if self.position[1] % 32 == 0:
+                self.is_falling = False
+                self.start_fall(terrain)
+
+    def dig(self, terrain, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                clicked_block = self.clicked_block(terrain, events)
+                if clicked_block is not None:
+                    print(clicked_block)
+                    terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
+                '''
+                # left
+                if -(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 \
+                        and ((self.position[1] % 32 != 0 and -32 - (32 - self.position[1] % 32) < dif_y < 32 -
+                              self.position[1] % 32)
+                             or (self.position[1] % 32 == 0 and -32 < dif_y < 0)):
+                    if terrain.terrain[self.block_y][self.block_x - 1].breakable:
+                        terrain.terrain[self.block_y][self.block_x - 1].change_type("sky")
+                # right
+                elif (((32 - self.position[0] % 32 < dif_x < 32 - self.position[0] % 32 + 32
+                        and not self.right_wall)
+                       or (-self.position[0] % 32 < dif_x < 32 - self.position[0] % 32 and self.right_wall))) \
+                        and ((self.position[1] % 32 != 0 and -32 - (32 - self.position[1] % 32) < dif_y < 32 -
+                              self.position[1] % 32)
+                             or (self.position[1] % 32 == 0 and -32 < dif_y < 0)):
+                    if terrain.terrain[self.block_y][self.block_x + 1].breakable:
+                        terrain.terrain[self.block_y][self.block_x + 1].change_type("sky")
+                # up
+                elif ((self.position[1] % 32 != 0 and -(self.position[1] % 32) > dif_y > -(self.position[1] % 32) - 32)
+                      or (self.position[1] % 32 == 0 and -32 > dif_y > -64)) \
+                        and ((-(self.position[0] % 32) + 32 > dif_x > -(self.position[0] % 32) and not self.right_wall)
+                             or (-(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 and self.right_wall)):
+                    if terrain.terrain[self.block_y - 1][self.block_x].breakable:
+                        terrain.terrain[self.block_y - 1][self.block_x].change_type("sky")
+                # down
+                elif (self.position[1] % 32 == 0 and 32 > dif_y > 0) \
+                        and ((-(self.position[0] % 32) + 32 > dif_x > -(self.position[0] % 32) and not self.right_wall)
+                             or (-(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 and self.right_wall)):
+                    if terrain.terrain[self.block_y + 1][self.block_x].breakable:
+                        terrain.terrain[self.block_y + 1][self.block_x].change_type("sky")
+                '''
+
+    def move(self, events, terrain, eq):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    self.keys_pressed["a"] = True
+                if event.key == pygame.K_d:
+                    self.keys_pressed["d"] = True
+                if event.key == pygame.K_w and self.can_jump:
+                    if terrain.terrain[self.block_y - 1][self.block_x].transparent:
+                        self.can_jump = False
+                if event.key == pygame.K_e:
+                    if self.keys_pressed["e"]:
+                        self.keys_pressed["e"] = False
+                        eq.eq_opened = False
+                    else:
+                        self.keys_pressed["e"] = True
+                        eq.eq_opened = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a:
+                    self.keys_pressed["a"] = False
+                if event.key == pygame.K_d:
+                    self.keys_pressed["d"] = False
+        if self.keys_pressed["a"]:
+            if self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x - 1].transparent \
+                    or self.right_wall:
+                self.position[0] -= 1
+            else:
+                self.left_wall = True
+        if self.keys_pressed["d"]:
+            if self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x + 1].transparent \
+                    or self.left_wall:
+                self.position[0] += 1
+            else:
+                self.right_wall = True
+
+        if not self.can_jump:
+            self.jump()
+
+        if self.position[0] % 32 != 0:
+            self.left_wall = False
+            self.right_wall = False
+
+        self.start_fall(terrain)
+        self.fall(terrain)
+
+    def update(self, events, terrain, eq):
+        self.move(events, terrain, eq)
+        self.update_current_block()
+        self.dig(terrain, events)
+
+    def draw(self, window):
+        window.blit(self.player_png, (self.POS_ON_SCREEN_X, self.POS_ON_SCREEN_Y))
+
+    '''
     def dig_down(self, terrain, x, y, eq):
         if self.right_wall and terrain.terrain[y + 1][x - 1].breakable:
             if terrain.terrain[y + 1][x].type == "tree":
@@ -53,19 +198,6 @@ class Player:
                 eq.set_slot(terrain.terrain[y + 1][x].type)
             terrain.terrain[y + 1][x].change_type("sky")
 
-    def start_fall(self, terrain, x, y):
-        if (self.position[1] % 32 == 0 and
-                (terrain.terrain[y + 1][x].transparent
-                 or (terrain.terrain[y + 1][x - 1].transparent and self.right_wall))):
-            self.is_falling = True
-
-    def fall(self, terrain, x, y):
-        if self.is_falling:
-            self.position[1] -= 2
-            if self.position[1] % 32 == 0:
-                self.is_falling = False
-                self.start_fall(terrain, x, y)
-
     def move_left(self, terrain, x, y):
         if not self.left_wall:
             if terrain.terrain[y][x].transparent or self.right_wall:
@@ -74,8 +206,6 @@ class Player:
             self.can_dig_right = False
         elif terrain.terrain[y][x - 1].breakable:
             self.can_dig_left = True
-
-    def move_left2(self, terrain, x, y):
 
     def move_right(self, terrain, x, y):
         if not self.right_wall:
@@ -218,6 +348,4 @@ class Player:
             self.e_pressed = False
 
         self.fall(terrain, player_index_x, player_index_y)
-
-    def draw(self, window):
-        window.blit(self.player_png, (32 * config.screen_width // 64, 32 * config.screen_height // 64))
+    '''
