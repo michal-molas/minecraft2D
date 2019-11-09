@@ -8,7 +8,7 @@ class Terrain:
 
     terrain = []
 
-    world_size_x = 1000
+    world_size_x = 1280
 
     dirt_png = pygame.image.load("dirt.png")
     water_png = pygame.image.load("water.png")
@@ -43,7 +43,7 @@ class Terrain:
             self.terrain.append(terrain_layer)
 
         self.create_resources()
-        self.create_forest_biome(300, 600)
+        self.create_forest_biome(600, 900)
 
     def create_forest_biome(self, a, b):
         for i in range((b-a)//4):
@@ -61,17 +61,17 @@ class Terrain:
     def create_iron(self, x, y):
         rand = random.randint(0, 50)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("iron")
+            self.terrain[y][x].change_type("iron")
 
     def create_gold(self, x, y):
         rand = random.randint(0, 200)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("gold")
+            self.terrain[y][x].change_type("gold")
 
     def create_diamonds(self, x, y):
         rand = random.randint(0, 1000)
         if rand == 0:
-            self.terrain[y][x] = Block.Block("diamond")
+            self.terrain[y][x].change_type("diamond")
 
     def create_tree(self, a, b):
         x = random.randint(a, b)
@@ -79,7 +79,7 @@ class Terrain:
         tree_size = random.randint(3, 5)
         free_space = True
         while i >= 0:
-            if self.terrain[i][x].type == "sky" and self.terrain[i+1][x].type == "dirt" and x != 520:
+            if self.terrain[i][x].type == "sky" and self.terrain[i+1][x].type == "dirt" and x != self.world_size_x // 2:
                 for n in range(5):
                     for m in (-1, 1):
                         if self.terrain[i-n][x+m].type != "sky":
@@ -87,10 +87,10 @@ class Terrain:
 
                 if free_space:
                     for n in range(tree_size):
-                        self.terrain[i - n][x] = Block.Block("tree")
+                        self.terrain[i - n][x].change_type("tree")
                     for n in range(3):
                         for m in range(3):
-                            self.terrain[i - 2 - tree_size + n][x - 1 + m] = Block.Block("leaves")
+                            self.terrain[i - 2 - tree_size + n][x - 1 + m].change_type("leaves")
                 else:
                     self.create_tree(a, b)
                 break
@@ -99,16 +99,11 @@ class Terrain:
     def draw(self, window, player):
         for i in range(config.screen_height // 32 + 2):
             for j in range(config.screen_width // 32 + 2):
-                index_y = i + 64 - (config.screen_height//32) // 2 - player.position[1]//32 - 1
-                index_x = j + self.world_size_x // 2 + player.position[0] // 32
-                if player.position[0] >= 0:
-                    pos_x = j * 32 - player.position[0] % 32
-                else:
-                    pos_x = j * 32 + (32 - player.position[0] % 32) - 32
-                if player.position[1] >= 0:
-                    pos_y = i * 32 + player.position[1] % 32 - 32
-                else:
-                    pos_y = i * 32 - (32 - player.position[1] % 32)
+                index_y = i + player.position[1] // 32 - config.screen_height // 64 - 1
+                index_x = j + player.position[0] // 32 - config.screen_width // 64
+
+                pos_x = j * 32 - player.position[0] % 32
+                pos_y = i * 32 - player.position[1] % 32
 
                 if self.terrain[index_y][index_x].type == "dirt":
                     window.blit(self.dirt_png, (pos_x, pos_y))
