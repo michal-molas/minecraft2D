@@ -94,41 +94,26 @@ class Player:
     def dig(self, terrain, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                clicked_block = self.clicked_block(terrain, events)
+                clicked_block = self.clicked_block(events)
                 if clicked_block is not None:
-                    print(clicked_block)
-                    terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
-                '''
-                # left
-                if -(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 \
-                        and ((self.position[1] % 32 != 0 and -32 - (32 - self.position[1] % 32) < dif_y < 32 -
-                              self.position[1] % 32)
-                             or (self.position[1] % 32 == 0 and -32 < dif_y < 0)):
-                    if terrain.terrain[self.block_y][self.block_x - 1].breakable:
-                        terrain.terrain[self.block_y][self.block_x - 1].change_type("sky")
-                # right
-                elif (((32 - self.position[0] % 32 < dif_x < 32 - self.position[0] % 32 + 32
-                        and not self.right_wall)
-                       or (-self.position[0] % 32 < dif_x < 32 - self.position[0] % 32 and self.right_wall))) \
-                        and ((self.position[1] % 32 != 0 and -32 - (32 - self.position[1] % 32) < dif_y < 32 -
-                              self.position[1] % 32)
-                             or (self.position[1] % 32 == 0 and -32 < dif_y < 0)):
-                    if terrain.terrain[self.block_y][self.block_x + 1].breakable:
-                        terrain.terrain[self.block_y][self.block_x + 1].change_type("sky")
-                # up
-                elif ((self.position[1] % 32 != 0 and -(self.position[1] % 32) > dif_y > -(self.position[1] % 32) - 32)
-                      or (self.position[1] % 32 == 0 and -32 > dif_y > -64)) \
-                        and ((-(self.position[0] % 32) + 32 > dif_x > -(self.position[0] % 32) and not self.right_wall)
-                             or (-(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 and self.right_wall)):
-                    if terrain.terrain[self.block_y - 1][self.block_x].breakable:
-                        terrain.terrain[self.block_y - 1][self.block_x].change_type("sky")
-                # down
-                elif (self.position[1] % 32 == 0 and 32 > dif_y > 0) \
-                        and ((-(self.position[0] % 32) + 32 > dif_x > -(self.position[0] % 32) and not self.right_wall)
-                             or (-(self.position[0] % 32) > dif_x > -(self.position[0] % 32) - 32 and self.right_wall)):
-                    if terrain.terrain[self.block_y + 1][self.block_x].breakable:
-                        terrain.terrain[self.block_y + 1][self.block_x].change_type("sky")
-                '''
+                    rel_blocks_x = clicked_block[0] - self.block_x
+                    rel_blocks_y = clicked_block[1] - self.block_y
+
+                    if (rel_blocks_x == 0 and (rel_blocks_y == 1 or rel_blocks_y == -1)) \
+                            or (rel_blocks_y == 0 and (rel_blocks_x == 1 or rel_blocks_x == -1)) \
+                            or (rel_blocks_y == -1 and rel_blocks_x == -1
+                                and (terrain.terrain[clicked_block[1] + 1][clicked_block[0]].transparent
+                                     or terrain.terrain[clicked_block[1]][clicked_block[0] + 1].transparent)) \
+                            or (rel_blocks_y == -1 and rel_blocks_x == 1
+                                and (terrain.terrain[clicked_block[1] + 1][clicked_block[0]].transparent
+                                     or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)) \
+                            or (rel_blocks_y == 1 and rel_blocks_x == -1
+                                and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
+                                     or terrain.terrain[clicked_block[1]][clicked_block[0] + 1].transparent)) \
+                            or (rel_blocks_y == 1 and rel_blocks_x == 1
+                                and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
+                                     or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
+                        terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
 
     def move(self, events, terrain, eq):
         for event in events:
