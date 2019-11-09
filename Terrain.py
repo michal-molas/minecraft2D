@@ -37,10 +37,7 @@ class Terrain:
                     else:
                         terrain_layer.append(Block.Block("dirt", j, i))
                 elif i > 64:
-                    if j % 2 == 0:
-                        terrain_layer.append(Block.Block("dirt", j, i))
-                    else:
-                        terrain_layer.append(Block.Block("stone", j, i))
+                    terrain_layer.append(Block.Block("dirt", j, i))
                 else:
                     terrain_layer.append(Block.Block("sky", j, i))
             self.terrain.append(terrain_layer)
