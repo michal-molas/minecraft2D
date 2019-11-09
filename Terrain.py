@@ -82,7 +82,7 @@ class Terrain:
         tree_size = random.randint(3, 5)
         free_space = True
         while i >= 0:
-            if self.terrain[i][x].type == "sky" and self.terrain[i+1][x].type == "dirt" and x != 520:
+            if self.terrain[i][x].type == "sky" and self.terrain[i+1][x].type == "dirt" and x != self.world_size_x // 2:
                 for n in range(5):
                     for m in (-1, 1):
                         if self.terrain[i-n][x+m].type != "sky":
