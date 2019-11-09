@@ -27,19 +27,19 @@ class Terrain:
             terrain_layer = []
             for j in range(self.world_size_x):
                 if i > 128:
-                    terrain_layer.append(Block.Block("bedrock", j, i))
+                    terrain_layer.append(Block.Block("bedrock"))
                 elif i > 80:
-                    terrain_layer.append(Block.Block("stone", j, i))
+                    terrain_layer.append(Block.Block("stone"))
                 elif i > 69:
                     rand = random.randint(0, 10)
                     if rand > 79 - i:
-                        terrain_layer.append(Block.Block("stone", j, i))
+                        terrain_layer.append(Block.Block("stone"))
                     else:
-                        terrain_layer.append(Block.Block("dirt", j, i))
+                        terrain_layer.append(Block.Block("dirt"))
                 elif i > 64:
-                    terrain_layer.append(Block.Block("dirt", j, i))
+                    terrain_layer.append(Block.Block("dirt"))
                 else:
-                    terrain_layer.append(Block.Block("sky", j, i))
+                    terrain_layer.append(Block.Block("sky"))
             self.terrain.append(terrain_layer)
 
         self.create_resources()

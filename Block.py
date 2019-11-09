@@ -5,15 +5,10 @@ class Block:
     transparent = False
     collectable = True
 
-    index_x = None
-    index_y = None
-
     png = None
 
-    def __init__(self, t, x, y):
+    def __init__(self, t):
         self.change_type(t)
-        self.index_x = x
-        self.index_y = y
 
     def update(self):
         if self.type == "bedrock":
