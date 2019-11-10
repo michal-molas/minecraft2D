@@ -37,6 +37,7 @@ class Player:
         "e": False,
         "a": False,
         "d": False,
+        "c": False
     }
 
     def __init__(self, terrain):
@@ -161,6 +162,13 @@ class Player:
                     else:
                         self.keys_pressed["e"] = True
                         eq.eq_opened = True
+                if event.key == pygame.K_c:
+                    if self.keys_pressed["c"]:
+                        self.keys_pressed["c"] = False
+                        eq.crafting_opened = False
+                    else:
+                        self.keys_pressed["c"] = True
+                        eq.crafting_opened = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     self.keys_pressed["a"] = False

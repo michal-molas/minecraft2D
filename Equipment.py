@@ -24,9 +24,10 @@ class Equipment:
     already_clicked = False
 
     eq_opened = False
+    crafting_opened = False
 
     def __init__(self):
-        for i in range(40):
+        for i in range(49):
             self.slots.append(Slot.Slot("empty"))
 
     def draw_bar(self, window):
@@ -58,57 +59,69 @@ class Equipment:
                 window.blit(self.slot_diamond_png,
                             (config.screen_width // 2 - 5 * 32 + i * 32,
                              config.screen_height - 2 * 32))
-            if self.slots[i].item != "empty":
+            if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
                 quantityText = self.quantity_font.render(str(self.slots[i].quantity), True, (255, 255, 255))
-                x = config.screen_width // 2 - 5 * 32 + 32 // 5 + i * 32
-                y = config.screen_height - 2 * 32 + 32 * 2 // 5
-                window.blit(quantityText, (x, y))
+                window.blit(quantityText, (config.screen_width // 2 - 5 * 32 + 32 // 5 + i * 32,
+                                           config.screen_height - 2 * 32 + 32 * 2 // 5))
 
     def draw_eq(self, window):
         for i in range(3):
             for j in range(10):
                 if self.slots[10 * (i + 1) + j].item == "empty":
-                    window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32
-                                                + j * 32,
-                                                config.screen_height - 7 * 32
-                                                + 32 * i))
+                    window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "dirt":
-                    window.blit(self.slot_dirt_png, (config.screen_width // 2 - 5 * 32
-                                                     + j * 32,
-                                                     config.screen_height - 7 * 32
-                                                     + 32 * i))
+                    window.blit(self.slot_dirt_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                     config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "tree":
-                    window.blit(self.slot_tree_png, (config.screen_width // 2 - 5 * 32
-                                                     + j * 32,
-                                                     config.screen_height - 7 * 32
-                                                     + 32 * i))
+                    window.blit(self.slot_tree_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                     config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "stone":
-                    window.blit(self.slot_stone_png, (config.screen_width // 2 - 5 * 32
-                                                      + j * 32,
-                                                      config.screen_height - 7 * 32
-                                                      + 32 * i))
+                    window.blit(self.slot_stone_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                      config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "iron":
-                    window.blit(self.slot_iron_png, (config.screen_width // 2 - 5 * 32
-                                                     + j * 32,
-                                                     config.screen_height - 7 * 32
-                                                     + 32 * i))
+                    window.blit(self.slot_iron_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                     config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "gold":
-                    window.blit(self.slot_gold_png, (config.screen_width // 2 - 5 * 32
-                                                     + j * 32,
-                                                     config.screen_height - 7 * 32
-                                                     + 32 * i))
+                    window.blit(self.slot_gold_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                     config.screen_height - 7 * 32 + 32 * i))
                 elif self.slots[10 * (i + 1) + j].item == "diamond":
-                    window.blit(self.slot_diamond_png, (config.screen_width // 2 - 5 * 32
-                                                        + j * 32,
-                                                        config.screen_height - 7 * 32
-                                                        + 32 * i))
-                if self.slots[10 * (i + 1) + j].item != "empty":
+                    window.blit(self.slot_diamond_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                                                        config.screen_height - 7 * 32 + 32 * i))
+                if self.slots[10 * (i + 1) + j].item != "empty" and self.slots[10 * (i + 1) + j].quantity != 1:
                     quantityText = self.quantity_font.render(str(self.slots[10 * (i + 1) + j].quantity),
                                                              True, (255, 255, 255))
-                    window.blit(quantityText,
-                                (config.screen_width // 2 - 5 * 32 + 32 // 5
-                                 + j * 32, config.screen_height - 7 * 32
-                                 + 32 * i + 32 * 2 // 5))
+                    window.blit(quantityText, (config.screen_width // 2 - 5 * 32 + 32 // 5 + j * 32,
+                                               config.screen_height - 7 * 32 + 32 * i + 32 * 2 // 5))
+
+    def draw_crafting(self, window):
+        for i in range(40, 49):
+            if self.slots[i].item == "empty":
+                window.blit(self.slot_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                            config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "dirt":
+                window.blit(self.slot_dirt_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "tree":
+                window.blit(self.slot_tree_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "stone":
+                window.blit(self.slot_stone_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                  config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "iron":
+                window.blit(self.slot_iron_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "gold":
+                window.blit(self.slot_gold_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            elif self.slots[i].item == "diamond":
+                window.blit(self.slot_diamond_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+                                                    config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
+            if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
+                quantityText = self.quantity_font.render(str(self.slots[i].quantity),
+                                                         True, (255, 255, 255))
+                window.blit(quantityText, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32 + 32 // 5,
+                                           config.screen_height - 7 * 32 + ((i - 40) // 3) * 32 + 32 * 2 // 5))
 
     def draw_picked_slot(self, window):
         window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
@@ -144,15 +157,21 @@ class Equipment:
 
     def draw_clicked_slot(self, window):
         if self.clicked_slot is not None:
-            if self.clicked_slot < 10:
-                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
-                                                   + self.clicked_slot % 10 * 32,
+            if 0 <= self.clicked_slot < 10:
+                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32 + self.clicked_slot % 10 * 32,
                                                    config.screen_height - 2 * 32))
-            elif self.eq_opened:
-                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
-                                                   + self.clicked_slot % 10 * 32,
-                                                   config.screen_height - 8 * 32
-                                                   + self.clicked_slot // 10 * 32))
+            elif 10 <= self.clicked_slot < 40 and self.eq_opened:
+                window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32 + self.clicked_slot % 10 * 32,
+                                                   config.screen_height - 8 * 32 + self.clicked_slot // 10 * 32))
+            elif 40 <= self.clicked_slot < 49 and self.crafting_opened:
+                window.blit(self.picked_slot_png, (config.screen_width // 2 + 7 * 32
+                                                   + ((self.clicked_slot - 40) % 3) * 32,
+                                                   config.screen_height - 7 * 32
+                                                   + ((self.clicked_slot - 40) // 3) * 32))
+
+    # 0 - 9 - bar
+    # 10 - 39 - eq
+    # 40 - 48 - crafting
 
     def click_slot(self, events):
         for event in events:
@@ -160,19 +179,24 @@ class Equipment:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     last_clicked = self.clicked_slot
-                    for i in range(4):
-                        for j in range(10):
-                            if i == 0:
-                                if config.screen_width // 2 - 5 * 32 + j * 32 < mouse_pos[0] < \
-                                        config.screen_width // 2 - 4 * 32 + j * 32 \
-                                        and config.screen_height - 2 * 32 < mouse_pos[1] < config.screen_height - 32:
-                                    self.clicked_slot = i * 10 + j
-                            elif self.eq_opened:
-                                if config.screen_width // 2 - 5 * 32 + j * 32 < mouse_pos[0] < \
-                                        config.screen_width // 2 - 4 * 32 + j * 32 \
-                                        and config.screen_height - 8 * 32 + i * 32 < mouse_pos[1] <\
-                                        config.screen_height - 7 * 32 + i * 32:
-                                    self.clicked_slot = i * 10 + j
+                    for i in range(49):
+                        if i < 10:
+                            if config.screen_width // 2 - 5 * 32 + i * 32 < mouse_pos[0] < \
+                                    config.screen_width // 2 - 4 * 32 + i * 32 \
+                                    and config.screen_height - 2 * 32 < mouse_pos[1] < config.screen_height - 32:
+                                self.clicked_slot = i
+                        elif i < 40 and self.eq_opened:
+                            if config.screen_width // 2 - 5 * 32 + (i % 10) * 32 < mouse_pos[0] < \
+                                    config.screen_width // 2 - 4 * 32 + (i % 10) * 32 \
+                                    and config.screen_height - 8 * 32 + (i // 10) * 32 < mouse_pos[1] < \
+                                    config.screen_height - 7 * 32 + (i // 10) * 32:
+                                self.clicked_slot = i
+                        elif i < 49 and self.crafting_opened:
+                            if config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32 < mouse_pos[0] < \
+                                    config.screen_width // 2 + 8 * 32 + ((i - 40) % 3) * 32 \
+                                    and config.screen_height - 7 * 32 + ((i - 40) // 3) * 32 < mouse_pos[1] < \
+                                    config.screen_height - 6 * 32 + ((i - 40) // 3) * 32:
+                                self.clicked_slot = i
                     if last_clicked is not None:
                         if self.slots[last_clicked].item != "empty":
                             if last_clicked != self.clicked_slot:
@@ -194,3 +218,16 @@ class Equipment:
                                 self.clicked_slot = None
                         else:
                             self.clicked_slot = None
+
+    def update(self, events):
+        self.change_picked_slot(events)
+        self.click_slot(events)
+
+    def draw(self, window):
+        self.draw_bar(window)
+        if self.eq_opened:
+            self.draw_eq(window)
+        if self.crafting_opened:
+            self.draw_crafting(window)
+        self.draw_picked_slot(window)
+        self.draw_clicked_slot(window)
