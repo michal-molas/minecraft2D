@@ -11,7 +11,7 @@ class Block:
         self.change_type(t)
 
     def update(self):
-        if self.type == "bedrock":
+        if self.type == "bedrock" or self.type == "sky":
             self.breakable = False
         else:
             self.breakable = True

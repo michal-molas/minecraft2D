@@ -124,7 +124,7 @@ class Player:
                     rel_blocks_x = clicked_block[0] - self.block_x
                     rel_blocks_y = clicked_block[1] - self.block_y
 
-                    if terrain.terrain[clicked_block[1]][clicked_block[0]].breakable:
+                    if terrain.terrain[clicked_block[1]][clicked_block[0]].transparent:
                         if (rel_blocks_x == 0 and (rel_blocks_y == 1 or rel_blocks_y == -1)) \
                                 or (rel_blocks_y == 0 and (rel_blocks_x == 1 or rel_blocks_x == -1)) \
                                 or (rel_blocks_y == -1 and rel_blocks_x == -1
@@ -169,15 +169,17 @@ class Player:
             
         if self.keys_pressed["a"]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x - 1].transparent
-                    or self.right_wall) and terrain.terrain[self.block_y][self.block_x].transparent:
+                    or self.right_wall and terrain.terrain[self.block_y][self.block_x].transparent
+                    and not (self.left_wall and self.keys_pressed["d"])):
                 self.position[0] -= 1
-            else:
+            elif not self.right_wall:
                 self.left_wall = True
         if self.keys_pressed["d"]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x + 1].transparent
-                    or self.left_wall) and terrain.terrain[self.block_y][self.block_x].transparent:
+                    or (self.left_wall and not self.keys_pressed["a"])) \
+                    and terrain.terrain[self.block_y][self.block_x].transparent:
                 self.position[0] += 1
-            else:
+            elif not self.left_wall:
                 self.right_wall = True
 
         if not self.can_jump:
