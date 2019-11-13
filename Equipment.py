@@ -1,17 +1,18 @@
-import config
+import Textures
 import pygame
+import config
 import Slot
 
 
 class Equipment:
-    slot_png = pygame.image.load("slot.png")
-    slot_dirt_png = pygame.image.load("slotDirt.png")
-    slot_stone_png = pygame.image.load("slotStone.png")
-    slot_tree_png = pygame.image.load("slotTree.png")
-    slot_iron_png = pygame.image.load("slotIron.png")
-    slot_gold_png = pygame.image.load("slotGold.png")
-    slot_diamond_png = pygame.image.load("slotDiamond.png")
-    picked_slot_png = pygame.image.load("pickedSlot.png")
+    slot_png = Textures.loadTxt("gui", "slot")
+    slot_dirt_png = Textures.loadTxt("gui", "slotDirt")
+    slot_stone_png = Textures.loadTxt("gui", "slotStone")
+    slot_tree_png = Textures.loadTxt("gui", "slotTree")
+    slot_iron_png = Textures.loadTxt("gui", "slotIron")
+    slot_gold_png = Textures.loadTxt("gui", "slotGold")
+    slot_diamond_png = Textures.loadTxt("gui", "slotDiamond")
+    picked_slot_png = Textures.loadTxt("gui", "pickedSlot")
 
     pygame.font.init()
 
@@ -35,28 +36,9 @@ class Equipment:
             if self.slots[i].item == "empty":
                 window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32 + i * 32,
                                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "dirt":
-                window.blit(self.slot_dirt_png,
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "tree":
-                window.blit(self.slot_tree_png,
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "stone":
-                window.blit(self.slot_stone_png,
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "iron":
-                window.blit(self.slot_iron_png,
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "gold":
-                window.blit(self.slot_gold_png,
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            elif self.slots[i].item == "diamond":
-                window.blit(self.slot_diamond_png,
+            else:
+                #ZLE TEKSTURY
+                window.blit(Textures.Textures.textures[self.slots[i].item],
                             (config.screen_width // 2 - 5 * 32 + i * 32,
                              config.screen_height - 2 * 32))
             if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
@@ -70,24 +52,9 @@ class Equipment:
                 if self.slots[10 * (i + 1) + j].item == "empty":
                     window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32 + j * 32,
                                                 config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "dirt":
-                    window.blit(self.slot_dirt_png, (config.screen_width // 2 - 5 * 32 + j * 32,
+                else:
+                    window.blit(Textures.Textures.textures[self.slots[10 * (i + 1) + j].item], (config.screen_width // 2 - 5 * 32 + j * 32,
                                                      config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "tree":
-                    window.blit(self.slot_tree_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                     config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "stone":
-                    window.blit(self.slot_stone_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                      config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "iron":
-                    window.blit(self.slot_iron_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                     config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "gold":
-                    window.blit(self.slot_gold_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                     config.screen_height - 7 * 32 + 32 * i))
-                elif self.slots[10 * (i + 1) + j].item == "diamond":
-                    window.blit(self.slot_diamond_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                        config.screen_height - 7 * 32 + 32 * i))
                 if self.slots[10 * (i + 1) + j].item != "empty" and self.slots[10 * (i + 1) + j].quantity != 1:
                     quantityText = self.quantity_font.render(str(self.slots[10 * (i + 1) + j].quantity),
                                                              True, (255, 255, 255))
@@ -99,24 +66,9 @@ class Equipment:
             if self.slots[i].item == "empty":
                 window.blit(self.slot_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
                                             config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "dirt":
-                window.blit(self.slot_dirt_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
+            else:
+                window.blit(Textures.Textures.textures[self.slots[i].item], (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
                                                  config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "tree":
-                window.blit(self.slot_tree_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "stone":
-                window.blit(self.slot_stone_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                  config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "iron":
-                window.blit(self.slot_iron_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "gold":
-                window.blit(self.slot_gold_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            elif self.slots[i].item == "diamond":
-                window.blit(self.slot_diamond_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                    config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
             if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
                 quantityText = self.quantity_font.render(str(self.slots[i].quantity),
                                                          True, (255, 255, 255))

@@ -2,6 +2,7 @@ import pygame
 import config
 import Block
 import random
+import Textures
 
 
 class Terrain:
@@ -9,18 +10,6 @@ class Terrain:
     terrain = []
 
     world_size_x = 1280
-
-    dirt_png = pygame.image.load("dirt.png")
-    water_png = pygame.image.load("water.png")
-    stone_png = pygame.image.load("stone.png")
-    grass_png = pygame.image.load("grass.png")
-    sky_png = pygame.image.load("sky.png")
-    bedrock_png = pygame.image.load("bedrock.png")
-    tree_png = pygame.image.load("tree.png")
-    leaves_png = pygame.image.load("leaves.png")
-    iron_png = pygame.image.load("iron.png")
-    gold_png = pygame.image.load("gold.png")
-    diamond_png = pygame.image.load("diamond.png")
 
     def create_terrain(self):
         for i in range(140):
@@ -105,25 +94,5 @@ class Terrain:
                 pos_x = j * 32 - player.position[0] % 32
                 pos_y = i * 32 - player.position[1] % 32
 
-                if self.terrain[index_y][index_x].type == "dirt":
-                    window.blit(self.dirt_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "water":
-                    window.blit(self.water_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "stone":
-                    window.blit(self.stone_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "sky":
-                    window.blit(self.sky_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "bedrock":
-                    window.blit(self.bedrock_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "grass":
-                    window.blit(self.grass_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "tree":
-                    window.blit(self.tree_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "leaves":
-                    window.blit(self.leaves_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "iron":
-                    window.blit(self.iron_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "gold":
-                    window.blit(self.gold_png, (pos_x, pos_y))
-                elif self.terrain[index_y][index_x].type == "diamond":
-                    window.blit(self.diamond_png, (pos_x, pos_y))
+                window.blit(Textures.Textures.textures[self.terrain[index_y][index_x].type], (pos_x, pos_y))
+

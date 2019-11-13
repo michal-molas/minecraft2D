@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="E:\Michal\pythonGames\minecraft2D\venv"
+VIRTUAL_ENV="C:\Users\erago\PycharmProjects\minecraft2D\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

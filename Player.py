@@ -1,5 +1,6 @@
 import config
 import pygame
+import Textures
 
 
 class Player:
@@ -11,7 +12,7 @@ class Player:
 
     position = None
 
-    player_png = pygame.image.load("player.png")
+    player_png = Textures.loadTxt("player", "player")
 
     can_jump = True
     jump_count = 44

@@ -4,6 +4,7 @@ import Player
 import Terrain
 import Equipment
 
+
 pygame.init()
 window = pygame.display.set_mode((config.screen_width, config.screen_height))
 pygame.display.set_caption("Minecraft2D")
@@ -23,6 +24,7 @@ def draw():
     terrain.draw(window, player)
     player.draw(window)
     equipment.draw(window)
+
 
 terrain.create_terrain()
 
