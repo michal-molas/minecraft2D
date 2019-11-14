@@ -2,78 +2,42 @@ import Textures
 import pygame
 import config
 import Slot
-
+from gui import Gui
+import gui.Bar
 
 class Equipment:
     slot_png = Textures.loadTxt("gui", "slot")
-    slot_dirt_png = Textures.loadTxt("gui", "slotDirt")
-    slot_stone_png = Textures.loadTxt("gui", "slotStone")
-    slot_tree_png = Textures.loadTxt("gui", "slotTree")
-    slot_iron_png = Textures.loadTxt("gui", "slotIron")
-    slot_gold_png = Textures.loadTxt("gui", "slotGold")
-    slot_diamond_png = Textures.loadTxt("gui", "slotDiamond")
     picked_slot_png = Textures.loadTxt("gui", "pickedSlot")
 
     pygame.font.init()
 
     quantity_font = pygame.font.SysFont("arial", 32 // 2)
 
-    slots = []
-    picked_slot = 0
+    gui_handler = Gui.Gui()
+    bar = gui.Bar.Bar()
 
+    slots = []
+
+    picked_slot = 0
     clicked_slot = None
+
     already_clicked = False
 
     eq_opened = False
     crafting_opened = False
 
     def __init__(self):
-        for i in range(49):
-            self.slots.append(Slot.Slot("empty"))
+        self.slots = [Slot.Slot("empty")] * 49
 
     def draw_bar(self, window):
-        for i in range(10):
-            if self.slots[i].item == "empty":
-                window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32 + i * 32,
-                                            config.screen_height - 2 * 32))
-            else:
-                #ZLE TEKSTURY
-                window.blit(Textures.Textures.textures[self.slots[i].item],
-                            (config.screen_width // 2 - 5 * 32 + i * 32,
-                             config.screen_height - 2 * 32))
-            if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
-                quantityText = self.quantity_font.render(str(self.slots[i].quantity), True, (255, 255, 255))
-                window.blit(quantityText, (config.screen_width // 2 - 5 * 32 + 32 // 5 + i * 32,
-                                           config.screen_height - 2 * 32 + 32 * 2 // 5))
+        self.bar.draw(window, self.gui_handler)
+
 
     def draw_eq(self, window):
-        for i in range(3):
-            for j in range(10):
-                if self.slots[10 * (i + 1) + j].item == "empty":
-                    window.blit(self.slot_png, (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                config.screen_height - 7 * 32 + 32 * i))
-                else:
-                    window.blit(Textures.Textures.textures[self.slots[10 * (i + 1) + j].item], (config.screen_width // 2 - 5 * 32 + j * 32,
-                                                     config.screen_height - 7 * 32 + 32 * i))
-                if self.slots[10 * (i + 1) + j].item != "empty" and self.slots[10 * (i + 1) + j].quantity != 1:
-                    quantityText = self.quantity_font.render(str(self.slots[10 * (i + 1) + j].quantity),
-                                                             True, (255, 255, 255))
-                    window.blit(quantityText, (config.screen_width // 2 - 5 * 32 + 32 // 5 + j * 32,
-                                               config.screen_height - 7 * 32 + 32 * i + 32 * 2 // 5))
+        self.gui_handler.drawGrid(window, self.slots, 10, 3, 10, -5, 5)
 
     def draw_crafting(self, window):
-        for i in range(40, 49):
-            if self.slots[i].item == "empty":
-                window.blit(self.slot_png, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                            config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            else:
-                window.blit(Textures.Textures.textures[self.slots[i].item], (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32,
-                                                 config.screen_height - 7 * 32 + ((i - 40) // 3) * 32))
-            if self.slots[i].item != "empty" and self.slots[i].quantity != 1:
-                quantityText = self.quantity_font.render(str(self.slots[i].quantity),
-                                                         True, (255, 255, 255))
-                window.blit(quantityText, (config.screen_width // 2 + 7 * 32 + ((i - 40) % 3) * 32 + 32 // 5,
-                                           config.screen_height - 7 * 32 + ((i - 40) // 3) * 32 + 32 * 2 // 5))
+        self.gui_handler.drawGrid(window, self.slots, 40, 3, 3, 6, 5)
 
     def draw_picked_slot(self, window):
         window.blit(self.picked_slot_png, (config.screen_width // 2 - 5 * 32
@@ -131,6 +95,7 @@ class Equipment:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     last_clicked = self.clicked_slot
+
                     for i in range(49):
                         if i < 10:
                             if config.screen_width // 2 - 5 * 32 + i * 32 < mouse_pos[0] < \
@@ -149,6 +114,7 @@ class Equipment:
                                     and config.screen_height - 7 * 32 + ((i - 40) // 3) * 32 < mouse_pos[1] < \
                                     config.screen_height - 6 * 32 + ((i - 40) // 3) * 32:
                                 self.clicked_slot = i
+                    # print(last_clicked, self.clicked_slot)
                     if last_clicked is not None:
                         if self.slots[last_clicked].item != "empty":
                             if last_clicked != self.clicked_slot:

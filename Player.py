@@ -115,6 +115,7 @@ class Player:
                                          or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
                             if terrain.terrain[clicked_block[1]][clicked_block[0]].collectable:
                                 eq.set_slot(terrain.terrain[clicked_block[1]][clicked_block[0]].type)
+                                eq.bar.container.addItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1, (0, 0))
                             terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
 
     def place_block(self, terrain, events, eq):
