@@ -152,7 +152,7 @@ class Player:
                 if event.key == pygame.K_d:
                     self.keys_pressed["d"] = True
                 
-                if event.key == pygame.K_w and self.can_jump and not self.is_falling:
+                if (event.key == pygame.K_w or event.key == pygame.K_SPACE) and self.can_jump and not self.is_falling:
                     if terrain.terrain[self.block_y - 1][self.block_x].transparent:
                         self.can_jump = False
                 if event.key == pygame.K_e:

@@ -2,6 +2,7 @@ import config
 import pygame
 import Slot
 
+slot_keys = {pygame.K_1: 0, pygame.K_2: 1, pygame.K_3: 2, pygame.K_4: 3, pygame.K_5: 4, pygame.K_6: 5, pygame.K_7: 6, pygame.K_8: 7, pygame.K_9: 8, pygame.K_0: 9}
 
 class Equipment:
     slot_png = pygame.image.load("slot.png")
@@ -131,12 +132,15 @@ class Equipment:
     def change_picked_slot(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:
+                if event.button == 5:
                     self.picked_slot += 1
                     self.picked_slot %= 10
-                if event.button == 5:
+                if event.button == 4:
                     self.picked_slot -= 1
                     self.picked_slot %= 10
+            elif event.type == pygame.KEYDOWN:
+                if slot_keys.get(event.key, 2137) != 2137:    #basically check if event.key in dictionary
+                    self.picked_slot = slot_keys[event.key]   #set slot
 
     def set_slot(self, item):
         for i in range(40):
