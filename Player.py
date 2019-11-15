@@ -28,15 +28,8 @@ class Player:
     left_wall = False
     right_wall = False
 
-    e_pressed = False
-
     POS_ON_SCREEN_X = 32 * config.screen_width // 64 - 16
     POS_ON_SCREEN_Y = 32 * config.screen_height // 64
-
-    keys_pressed = {
-        "e": False,
-        "c": False
-    }
 
     def __init__(self, terrain):
         self.position = [terrain.world_size_x * 32 // 2 + 16, 64 * 32 + 32]
@@ -146,23 +139,10 @@ class Player:
         #handling toggleable keys
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if (event.key == pygame.K_w or event.key == pygame.K_SPACE) and self.can_jump and not self.is_falling:
-                    if terrain.terrain[self.block_y - 1][self.block_x].transparent:
-                        self.can_jump = False
                 if event.key == pygame.K_e:
-                    if self.keys_pressed["e"]:
-                        self.keys_pressed["e"] = False
-                        eq.eq_opened = False
-                    else:
-                        self.keys_pressed["e"] = True
-                        eq.eq_opened = True
+                    eq.eq_opened = not eq.eq_opened
                 if event.key == pygame.K_c:
-                    if self.keys_pressed["c"]:
-                        self.keys_pressed["c"] = False
-                        eq.crafting_opened = False
-                    else:
-                        self.keys_pressed["c"] = True
-                        eq.crafting_opened = True
+                    eq.crafting_opened = not eq.crafting_opened
              
         #handling keys held continuously
         keys = pygame.key.get_pressed()  
