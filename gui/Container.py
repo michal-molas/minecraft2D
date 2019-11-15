@@ -32,3 +32,19 @@ class Container:
                     print([(el.item, el.quantity) for el in self.content])
                     return True
         return False
+
+    def takeItem(self, item, count, slot):
+        print("Zabieram item")
+        if slot[0] <= self.x_slots and slot[1] <= self.y_slots:
+            for i in range(self.size):
+                position = self.content[slot[0] * self.y_slots + slot[1] + i]
+                print(position.item, position.quantity)
+                if position.item == item:
+                    if position.quantity >= count:
+                        position.quantity -= count
+                    else:
+                        return False
+                    if position.quantity == 0:
+                        position.item = "empty"
+                    return True
+        return False

@@ -21,3 +21,5 @@ class Gui:
                 if slots[slot_nr].item != "empty" and slots[slot_nr].quantity != 1:
                     quantityText = self.quantity_font.render(str(slots[slot_nr].quantity), True, (255, 255, 255))
                     window.blit(quantityText, (coords[0] + 5, coords[1] + 12))
+
+    #def drawHighlighted(self, window):

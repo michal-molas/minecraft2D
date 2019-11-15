@@ -114,13 +114,14 @@ class Player:
                                     and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
                                          or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
                             if terrain.terrain[clicked_block[1]][clicked_block[0]].collectable:
-                                eq.set_slot(terrain.terrain[clicked_block[1]][clicked_block[0]].type)
-                                eq.bar.container.addItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1, (0, 0))
+                                # eq.set_slot(terrain.terrain[clicked_block[1]][clicked_block[0]].type)
+                                eq.bar.container.addItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1,
+                                                         (0, 0))
                             terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
 
     def place_block(self, terrain, events, eq):
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and eq.slots[eq.picked_slot].item != "empty":
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and eq.bar.container.content[eq.picked_slot].item != "empty":
                 clicked_block = self.clicked_block()
                 if clicked_block is not None:
 
@@ -142,9 +143,10 @@ class Player:
                                 or (rel_blocks_y == 1 and rel_blocks_x == 1
                                     and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
                                          or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
-                            terrain.terrain[clicked_block[1]][clicked_block[0]]\
-                                .change_type(eq.slots[eq.picked_slot].item)
-                            eq.remove_items(eq.picked_slot, 1)
+                            terrain.terrain[clicked_block[1]][clicked_block[0]] \
+                                .change_type(eq.bar.container.content[eq.picked_slot].item)
+                            eq.bar.container.takeItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1,
+                                                      (0, eq.picked_slot))
 
     def move(self, events, terrain, eq):
         for event in events:
@@ -153,7 +155,7 @@ class Player:
                     self.keys_pressed["a"] = True
                 if event.key == pygame.K_d:
                     self.keys_pressed["d"] = True
-                
+
                 if event.key == pygame.K_w and self.can_jump and not self.is_falling:
                     if terrain.terrain[self.block_y - 1][self.block_x].transparent:
                         self.can_jump = False
@@ -176,7 +178,7 @@ class Player:
                     self.keys_pressed["a"] = False
                 if event.key == pygame.K_d:
                     self.keys_pressed["d"] = False
-            
+
         if self.keys_pressed["a"]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x - 1].transparent
                     or self.right_wall and terrain.terrain[self.block_y][self.block_x].transparent
@@ -186,7 +188,7 @@ class Player:
                 self.left_wall = True
         if self.keys_pressed["d"]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x + 1].transparent
-                    or (self.left_wall and not self.keys_pressed["a"])) \
+                or (self.left_wall and not self.keys_pressed["a"])) \
                     and terrain.terrain[self.block_y][self.block_x].transparent:
                 self.position[0] += 1
             elif not self.left_wall:

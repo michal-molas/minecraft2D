@@ -4,6 +4,7 @@ import config
 import Slot
 from gui import Gui
 import gui.Bar
+import gui.Equipment
 
 class Equipment:
     slot_png = Textures.loadTxt("gui", "slot")
@@ -15,6 +16,7 @@ class Equipment:
 
     gui_handler = Gui.Gui()
     bar = gui.Bar.Bar()
+    eq = gui.Equipment.Equipment()
 
     slots = []
 
@@ -32,9 +34,8 @@ class Equipment:
     def draw_bar(self, window):
         self.bar.draw(window, self.gui_handler)
 
-
     def draw_eq(self, window):
-        self.gui_handler.drawGrid(window, self.slots, 10, 3, 10, -5, 5)
+        self.eq.draw(window, self.gui_handler)
 
     def draw_crafting(self, window):
         self.gui_handler.drawGrid(window, self.slots, 40, 3, 3, 6, 5)

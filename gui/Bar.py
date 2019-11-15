@@ -3,6 +3,7 @@ import gui.Container
 
 class Bar:
     container = None
+    picked_slot = 0
 
     def __init__(self):
         self.container = gui.Container.Container(1, 10, -5, 2)
