@@ -35,8 +35,6 @@ class Player:
 
     keys_pressed = {
         "e": False,
-        "a": False,
-        "d": False,
         "c": False
     }
 
@@ -145,13 +143,9 @@ class Player:
                             eq.remove_items(eq.picked_slot, 1)
 
     def move(self, events, terrain, eq):
+        #handling toggleable keys
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    self.keys_pressed["a"] = True
-                if event.key == pygame.K_d:
-                    self.keys_pressed["d"] = True
-                
                 if (event.key == pygame.K_w or event.key == pygame.K_SPACE) and self.can_jump and not self.is_falling:
                     if terrain.terrain[self.block_y - 1][self.block_x].transparent:
                         self.can_jump = False
@@ -169,27 +163,29 @@ class Player:
                     else:
                         self.keys_pressed["c"] = True
                         eq.crafting_opened = True
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
-                    self.keys_pressed["a"] = False
-                if event.key == pygame.K_d:
-                    self.keys_pressed["d"] = False
-            
-        if self.keys_pressed["a"]:
+             
+        #handling keys held continuously
+        keys = pygame.key.get_pressed()  
+        
+        if keys[pygame.K_a]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x - 1].transparent
                     or self.right_wall and terrain.terrain[self.block_y][self.block_x].transparent
-                    and not (self.left_wall and self.keys_pressed["d"])):
+                    and not (self.left_wall and keys[pygame.K_d])):
                 self.position[0] -= 1
             elif not self.right_wall:
                 self.left_wall = True
-        if self.keys_pressed["d"]:
+        if keys[pygame.K_d]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x + 1].transparent
-                    or (self.left_wall and not self.keys_pressed["a"])) \
+                    or (self.left_wall and not keys[pygame.K_a])) \
                     and terrain.terrain[self.block_y][self.block_x].transparent:
                 self.position[0] += 1
             elif not self.left_wall:
                 self.right_wall = True
-
+        if (keys[pygame.K_w] or keys[pygame.K_SPACE]) and self.can_jump and not self.is_falling:
+            if terrain.terrain[self.block_y - 1][self.block_x].transparent:
+                self.can_jump = False        
+        
+        #some other stuff idk not my code lmao
         if not self.can_jump:
             self.jump()
 
