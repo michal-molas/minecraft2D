@@ -145,8 +145,7 @@ class Player:
                                          or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
                             terrain.terrain[clicked_block[1]][clicked_block[0]] \
                                 .change_type(eq.bar.container.content[eq.picked_slot].item)
-                            eq.bar.container.takeItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1,
-                                                      (0, eq.picked_slot))
+                            eq.bar.container.takeItem(1, (0, eq.picked_slot))
 
     def move(self, events, terrain, eq):
         for event in events:

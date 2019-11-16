@@ -2,7 +2,7 @@ import pygame
 import config
 import Player
 import Terrain
-import Equipment
+import Inventory
 
 
 pygame.init()
@@ -11,7 +11,7 @@ pygame.display.set_caption("Minecraft2D")
 
 terrain = Terrain.Terrain()
 player = Player.Player(terrain)
-equipment = Equipment.Equipment()
+equipment = Inventory.Inventory()
 
 
 def update(ev):
