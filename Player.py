@@ -1,7 +1,6 @@
 import config
 import pygame
 
-
 class Player:
     screen_pos_x = config.screen_width
     screen_pos_y = config.screen_height
