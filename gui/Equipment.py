@@ -5,7 +5,7 @@ import gui.Gui
 class Equipment:
 
     def __init__(self):
-        self.corners = (15, 14, 10, 3)
+        self.corners = (15, -6, 10, 3)
         self.bb = gui.Gui.getRegionBoundingBox(self.corners)
         self.container = gui.Container.Container(self.corners)
 

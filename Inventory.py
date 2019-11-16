@@ -32,6 +32,11 @@ class Inventory:
     def draw_picked_slot(self, window):
         self.gui_handler.pickSlot(window, (self.bar.bb[0] // 32 + self.picked_slot, self.bar.bb[1] // 32))
 
+    def draw_item_in_hand(self, window):
+        if self.item_in_hand.item != "empty":
+            pos = pygame.mouse.get_pos()
+            self.gui_handler.drawTexture(window, self.item_in_hand, pos)
+
     def change_picked_slot(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -46,26 +51,24 @@ class Inventory:
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    eq_coords = gui.Gui.getPositionCoords(self.eq.bb)
-                    bar_coords = gui.Gui.getPositionCoords(self.bar.bb)
-                    if eq_coords is not None:
-                        slot = (eq_coords[0] - self.eq.bb[0] // 32, eq_coords[1] - self.eq.bb[3] // 32 - 1)
-                        print(slot)
-                        item = self.eq.container.getItemInSlot(slot).__copy__()
-                        self.eq.container.takeItem(item.quantity, slot)
+                    # creation of an array that stores all possible inventories
+                    cases = [[gui.Gui.getPositionCoords(self.eq.bb), self.eq],
+                             [gui.Gui.getPositionCoords(self.bar.bb), self.bar]]
+                    # get the non-None value from the array (get the coords of the mouse that's inside a bounding box
+                    # of an container)
+                    val = next((case for case in cases if case[0] is not None), None)
+                    if val is not None:
+                        # get the relative coordinates in the container
+                        slot = (val[0][0] - val[1].bb[0]//32, val[0][1] - val[1].bb[1]//32)
+                        item = val[1].container.getItemInSlot(slot).__copy__()
                         hand = self.item_in_hand.__copy__()
-                        self.item_in_hand = item
-                        self.eq.container.addItem(hand.item, hand.quantity, slot)
-                    if bar_coords is not None:
-                        # that code is not perfect I know it has to be written in better way
-                        # TODO: CHANGE THIS TO SOMETHING MORE READABLE
-                        slot = (bar_coords[0] - self.bar.bb[0] // 32, bar_coords[1] - self.bar.bb[3] // 32 - 1)
-                        print(slot)
-                        item = self.bar.container.getItemInSlot(slot).__copy__()
-                        self.bar.container.takeItem(item.quantity, slot)
-                        hand = self.item_in_hand.__copy__()
-                        self.item_in_hand = item
-                        self.bar.container.addItem(hand.item, hand.quantity, slot)
+                        if item.item != hand.item:
+                            val[1].container.takeItem(item.quantity, slot)
+                            self.item_in_hand = item
+                            val[1].container.addItem(hand.item, hand.quantity, slot)
+                        else:
+                            val[1].container.addItem(hand.item, hand.quantity, slot)
+                            self.item_in_hand = Slot.Slot("empty")
 
     def update(self, events):
         self.change_picked_slot(events)
@@ -76,6 +79,7 @@ class Inventory:
         self.draw_bar(window)
         if self.eq_opened:
             self.draw_eq(window)
+            self.draw_item_in_hand(window)
             self.gui_handler.drawHighlighted(window, self.eq.bb)
             self.gui_handler.drawHighlighted(window, self.bar.bb)
         # if self.crafting_opened:
