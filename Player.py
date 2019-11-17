@@ -2,7 +2,6 @@ import config
 import pygame
 import Textures
 
-
 class Player:
     screen_pos_x = config.screen_width
     screen_pos_y = config.screen_height
@@ -29,17 +28,8 @@ class Player:
     left_wall = False
     right_wall = False
 
-    e_pressed = False
-
     POS_ON_SCREEN_X = 32 * config.screen_width // 64 - 16
     POS_ON_SCREEN_Y = 32 * config.screen_height // 64
-
-    keys_pressed = {
-        "e": False,
-        "a": False,
-        "d": False,
-        "c": False
-    }
 
     def __init__(self, terrain):
         self.position = [terrain.world_size_x * 32 // 2 + 16, 64 * 32 + 32]
@@ -148,51 +138,36 @@ class Player:
                             eq.bar.container.takeItem(1, (0, eq.picked_slot))
 
     def move(self, events, terrain, eq):
+        #handling toggleable keys
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    self.keys_pressed["a"] = True
-                if event.key == pygame.K_d:
-                    self.keys_pressed["d"] = True
-
-                if event.key == pygame.K_w and self.can_jump and not self.is_falling:
-                    if terrain.terrain[self.block_y - 1][self.block_x].transparent:
-                        self.can_jump = False
                 if event.key == pygame.K_e:
-                    if self.keys_pressed["e"]:
-                        self.keys_pressed["e"] = False
-                        eq.eq_opened = False
-                    else:
-                        self.keys_pressed["e"] = True
-                        eq.eq_opened = True
+                    eq.eq_opened = not eq.eq_opened
                 if event.key == pygame.K_c:
-                    if self.keys_pressed["c"]:
-                        self.keys_pressed["c"] = False
-                        eq.crafting_opened = False
-                    else:
-                        self.keys_pressed["c"] = True
-                        eq.crafting_opened = True
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
-                    self.keys_pressed["a"] = False
-                if event.key == pygame.K_d:
-                    self.keys_pressed["d"] = False
+                    eq.crafting_opened = not eq.crafting_opened
 
-        if self.keys_pressed["a"]:
+        #handling keys held continuously
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x - 1].transparent
                     or self.right_wall and terrain.terrain[self.block_y][self.block_x].transparent
-                    and not (self.left_wall and self.keys_pressed["d"])):
+                    and not (self.left_wall and keys[pygame.K_d])):
                 self.position[0] -= 1
             elif not self.right_wall:
                 self.left_wall = True
-        if self.keys_pressed["d"]:
+        if keys[pygame.K_d]:
             if (self.position[0] % 32 != 0 or terrain.terrain[self.block_y][self.block_x + 1].transparent
-                or (self.left_wall and not self.keys_pressed["a"])) \
+                    or (self.left_wall and not keys[pygame.K_a])) \
                     and terrain.terrain[self.block_y][self.block_x].transparent:
                 self.position[0] += 1
             elif not self.left_wall:
                 self.right_wall = True
+        if (keys[pygame.K_w] or keys[pygame.K_SPACE]) and self.can_jump and not self.is_falling:
+            if terrain.terrain[self.block_y - 1][self.block_x].transparent:
+                self.can_jump = False
 
+        #some other stuff idk not my code lmao
         if not self.can_jump:
             self.jump()
 
