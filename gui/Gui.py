@@ -63,3 +63,7 @@ class Gui:
         if item.quantity > 1:
             quantityText = self.quantity_font.render(str(item.quantity), True, (255, 255, 255))
             window.blit(quantityText, (pos[0] - 3, pos[1] + 4))
+
+    def drawText(self, window, pos_x, pos_y, text):
+        text = self.quantity_font.render(text, True, (255, 255, 255))
+        window.blit(text, (pos_x, pos_y))

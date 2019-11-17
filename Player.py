@@ -1,15 +1,11 @@
 import config
 import pygame
 import Textures
+import Inventory
 
 class Player:
     screen_pos_x = config.screen_width
     screen_pos_y = config.screen_height
-
-    block_x = None
-    block_y = None
-
-    position = None
 
     player_png = Textures.loadTxt("player", "player")
 
@@ -32,9 +28,14 @@ class Player:
     POS_ON_SCREEN_Y = 32 * config.screen_height // 64
 
     def __init__(self, terrain):
+        self.player_name = "SKR"
         self.position = [terrain.world_size_x * 32 // 2 + 16, 64 * 32 + 32]
         self.block_x = self.position[0] // 32
         self.block_y = self.position[1] // 32 - 1
+
+    def drawNickname(self, window):
+        Inventory.Inventory.gui_handler.drawText(window, config.screen_width//2 - (len(self.player_name) * 4),
+                                                 config.screen_height//2 - 16, self.player_name)
 
     def update_current_block(self):
         if self.position[0] % 32 != 0:
@@ -186,3 +187,4 @@ class Player:
 
     def draw(self, window):
         window.blit(self.player_png, (self.POS_ON_SCREEN_X, self.POS_ON_SCREEN_Y))
+        self.drawNickname(window)
