@@ -3,8 +3,6 @@ import config
 import Player
 import Terrain
 import Inventory
-
-import Equipment
 import showcoords
 
 pygame.init()
@@ -14,6 +12,7 @@ pygame.display.set_caption("Minecraft2D")
 terrain = Terrain.Terrain()
 player = Player.Player(terrain)
 equipment = Inventory.Inventory()
+
 
 def update(ev):
     player.update(ev, terrain, equipment)
