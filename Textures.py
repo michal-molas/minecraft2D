@@ -1,6 +1,6 @@
 import pygame
 import os
-from Blocks import *
+from blocks.Blocks import *
 
 
 def loadTxt(kind, name):
@@ -18,5 +18,5 @@ class Textures:
 
 # add block textures
 
-for el in Blocks.blocks:
+for el in blocks.keys():
     Textures().addTexture(el, "blocks", el)

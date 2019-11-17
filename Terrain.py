@@ -1,6 +1,5 @@
-import pygame
 import config
-import Block
+from blocks.Blocks import *
 import random
 import Textures
 
@@ -16,19 +15,19 @@ class Terrain:
             terrain_layer = []
             for j in range(self.world_size_x):
                 if i > 128:
-                    terrain_layer.append(Block.Block("bedrock"))
+                    terrain_layer.append(Bedrock())
                 elif i > 80:
-                    terrain_layer.append(Block.Block("stone"))
+                    terrain_layer.append(Stone())
                 elif i > 69:
                     rand = random.randint(0, 10)
                     if rand > 79 - i:
-                        terrain_layer.append(Block.Block("stone"))
+                        terrain_layer.append(Stone())
                     else:
-                        terrain_layer.append(Block.Block("dirt"))
+                        terrain_layer.append(Dirt())
                 elif i > 64:
-                    terrain_layer.append(Block.Block("dirt"))
+                    terrain_layer.append(Dirt())
                 else:
-                    terrain_layer.append(Block.Block("sky"))
+                    terrain_layer.append(Sky())
             self.terrain.append(terrain_layer)
 
         self.create_resources()
@@ -50,17 +49,17 @@ class Terrain:
     def create_iron(self, x, y):
         rand = random.randint(0, 50)
         if rand == 0:
-            self.terrain[y][x].change_type("iron")
+            self.terrain[y][x] = Iron()
 
     def create_gold(self, x, y):
         rand = random.randint(0, 200)
         if rand == 0:
-            self.terrain[y][x].change_type("gold")
+            self.terrain[y][x] = Gold()
 
     def create_diamonds(self, x, y):
         rand = random.randint(0, 1000)
         if rand == 0:
-            self.terrain[y][x].change_type("diamond")
+            self.terrain[y][x] = Diamond()
 
     def create_tree(self, a, b):
         x = random.randint(a, b)
@@ -76,10 +75,10 @@ class Terrain:
 
                 if free_space:
                     for n in range(tree_size):
-                        self.terrain[i - n][x].change_type("tree")
+                        self.terrain[i - n][x] = Tree()
                     for n in range(3):
                         for m in range(3):
-                            self.terrain[i - 2 - tree_size + n][x - 1 + m].change_type("leaves")
+                            self.terrain[i - 2 - tree_size + n][x - 1 + m] = Leaves()
                 else:
                     self.create_tree(a, b)
                 break

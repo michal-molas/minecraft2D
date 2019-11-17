@@ -2,6 +2,8 @@ import config
 import pygame
 import Textures
 import Inventory
+from blocks.Blocks import *
+
 
 class Player:
     screen_pos_x = config.screen_width
@@ -108,7 +110,7 @@ class Player:
                                 # eq.set_slot(terrain.terrain[clicked_block[1]][clicked_block[0]].type)
                                 eq.bar.container.addItem(terrain.terrain[clicked_block[1]][clicked_block[0]].type, 1,
                                                          (0, 0))
-                            terrain.terrain[clicked_block[1]][clicked_block[0]].change_type("sky")
+                            terrain.terrain[clicked_block[1]][clicked_block[0]] = Sky()
 
     def place_block(self, terrain, events, eq):
         for event in events:
@@ -134,8 +136,8 @@ class Player:
                                 or (rel_blocks_y == 1 and rel_blocks_x == 1
                                     and (terrain.terrain[clicked_block[1] - 1][clicked_block[0]].transparent
                                          or terrain.terrain[clicked_block[1]][clicked_block[0] - 1].transparent)):
-                            terrain.terrain[clicked_block[1]][clicked_block[0]] \
-                                .change_type(eq.bar.container.content[eq.picked_slot].item)
+                            terrain.terrain[clicked_block[1]][clicked_block[0]] = \
+                                blocks[eq.bar.container.content[eq.picked_slot].item]()
                             eq.bar.container.takeItem(1, (0, eq.picked_slot))
 
     def move(self, events, terrain, eq):
