@@ -1,6 +1,10 @@
-class Slot:
-    item = ""
-    quantity = 0
+from copy import copy
 
-    def __init__(self, item):
+class Slot:
+
+    def __init__(self, item, quantity=0):
         self.item = item
+        self.quantity = quantity
+
+    def __copy__(self):
+        return type(self)(self.item, self.quantity)

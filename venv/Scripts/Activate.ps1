@@ -27,7 +27,7 @@ function global:deactivate ([switch]$NonDestructive) {
 
 deactivate -nondestructive
 
-$env:VIRTUAL_ENV="E:\Michal\pythonGames\minecraft2D\venv"
+$env:VIRTUAL_ENV="C:\Users\erago\PycharmProjects\minecraft2D\venv"
 
 if (! $env:VIRTUAL_ENV_DISABLE_PROMPT) {
     # Set the prompt to include the env name
